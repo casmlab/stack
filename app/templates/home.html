@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-
   <div class="row project-home">
     <!-- Project Info -->
     <div class="col-md-4">
@@ -67,4 +66,30 @@
 
     </div>
   </div>
+
+
+<style>
+
+
+
+</style>
+<script src="{{ url_for('static', filename='display.js') }}"></script>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script type="text/javascript">
+var objects=[];
+var terms=[];
+{% for collector in project_detail['collectors'] %}
+objects.push('{{ collector['collector_name']}}');
+terms.push({{ collector['num_terms']}});
+{% endfor %}
+
+display_linegraph(objects,terms,'Collector Stats','containerstats');
+
+		</script>
+
+
+
+<div id="containerstats"></div>
+
 {% endblock %}

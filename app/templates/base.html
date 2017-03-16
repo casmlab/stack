@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta name="description" content="STACKS is the Social Media Tracker, Analyzer, and Collector Toolkit at Syracuse University." />
-
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     {% block meta %}
     {% endblock %}
 
@@ -21,7 +21,8 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static',filename='popup.css') }}"/>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -41,6 +42,7 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="{{ url_for('index') }}">STACKS</a>
         </div>
+
 
         {% if g.admin or g.project %}
           {% if g.admin %}
@@ -145,7 +147,15 @@
 
     <!-- jQuery & Boostrap -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
     <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+
+
+
+<script src="{{ url_for('static', filename='highcharts.js') }}"></script>
+<script src="{{ url_for('static', filename='highcharts-more.js') }}"></script>
+<script src="{{ url_for('static', filename='exporting.js') }}"></script>
+<script src="{{ url_for('static', filename='display.js') }}"></script>
 
     <!-- Additional scripts can go here -->
     {% block script %}

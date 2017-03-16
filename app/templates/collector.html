@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-
-  <div class="row">
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"/>
+<div class="row">
     <div class="col-md-5">
       <div class="page-header">
         <h1>{{ collector['collector_name'] }}</h1>
@@ -29,7 +29,20 @@
       </div>
 
       <br />
+	
+<!-Total Data in DB-->
+ <div class="row">
+        <div class="col-sm-4"><strong>Total Tweets/Comments</strong></div>
+        <div class="col-sm-8">{{ totalsize }}</div>
+      </div>
+<br/>
+ <div class="row">
+        <div class="col-sm-4"><strong>Collector Terms</strong></div>
+        <div class="col-sm-8" id="termvalues"></div>
+      </div>
 
+
+	<br/>
       <!-- Start & End Date -->
       <div class="row">
         <div class="col-sm-4"><strong>Start Date</strong></div>
@@ -113,14 +126,16 @@
         <input type="submit" name="control" value="Restart" class="btn btn-default">
       </form>
     </div>
-
+<br>
+ <span class="glyphicon glyphicon-search"></span>
+<input type="text" id="searchterm" onkeyup="search()" placeholder="Search for Terms.."  class="col-sm-2">
     <!-- Terms Table -->
     <div class="col-md-7">
       <h3>Collector Terms</h3>
 
       {% if collector['terms_list'] %}
 
-        <table class="table">
+        <table id="showtable" class="table">
           <thead>
             <tr>
               <th>Term</th>
@@ -132,9 +147,9 @@
           </thead>
 
           {% for term in collector['terms_list'] %}
-            <tr>
-              <td>{{ term['term'] }}</td>
-              <td>{{ term['type'] }}</td>
+            <tr >
+              <td  class="termname" id={{term['id']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
+              <td >{{ term['term'] }}</td>
               <td>
                 {% if term['collect'] == 1 %}
                   Yes
@@ -154,13 +169,175 @@
                   None
                 {% endif %}
               </td>
+
             </tr>
           {% endfor %}
-        </table>
+<tr >
+<span id="notermmsg" style="display:none">
+No Terms Found</span>
+</tr>
+</table>
 
       {% else %}
         No Terms
       {% endif %}
     </div>
   </div>
+
+
+
+<div class="loader" id="loader" style="top:80%;left:43%;position:absolute;display:none"></div>
+
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header" id="modalheader">
+      <span id="closemodel" onclick="closemodel()" class="close">&times;</span>
+      <h2 id="header"></h2>
+    </div>
+    <div class="modal-body" id="putdata">
+      <p></p>
+      <p></p>
+    </div>
+   
+<div class="modal-body" id="usertweets" style="display:none">
+      <p></p>
+      <p></p>
+    </div>
+
+<button id="tweetsdisplay" class="databutton" value="" text="1"  onclick="showtweets()"><span>View Tweets</span></button>
+  </div>
+
+</div>
+
+
+<script>
+var totalcols=document.getElementById('showtable').getElementsByTagName("td").length;
+var entries=0;
+var rows=document.getElementById('showtable').rows[0].cells.length;
+if(rows!=0)
+entries=totalcols/rows;
+
+document.getElementById("termvalues").innerHTML=entries;
+document.getElementById("notermmsg").style.display="none";
+var terms=document.getElementsByClassName('termname');
+document.getElementById("searchterm").value="";
+var searchterm="";var i=0,flag=1;
+
+function search()
+{
+	flag=1;
+	searchterm=document.getElementById("searchterm").value;
+	for(i=0;i<terms.length;i++)
+		{
+		terms[i].parentElement.style.display="";
+			if(!terms[i].innerHTML.includes(searchterm)){
+			terms[i].parentElement.style.display="none";}
+			else {flag=0;}			
+				
+		}
+if(flag==1)
+{document.getElementById("notermmsg").style.display="block";}
+else
+document.getElementById("notermmsg").style.display="none";
+}
+/*method in views.py*/
+function ShowContent(termid)
+
+{
+try{
+document.getElementById("tweetsdisplay").value=termid;
+document.getElementById("loader").style.display="block";
+document.getElementById("putdata").innerHTML="";
+	$.ajax({
+type:"GET",
+	url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/0/0/"+termid,
+
+success:function(result)
+{
+	document.getElementById("loader").style.display="none";
+	modal.style.display = "block";
+	res=JSON.parse(result);
+	if(res.message=="Failed"){information=res.reason;
+		document.getElementById("modalheader").style.backgroundColor="#EE0000";
+		document.getElementById("header").innerHTML="";
+		}
+	else{
+		information="<b>Name:</b>"+res.names +
+		"<br> <b> Description </b>: "+res.description+ "<br>" +
+		"<b>Friend Count</b>: "+res.friends_count+
+		"<br><b>Location:</b>"+res.location+
+		"<br><b>Favourite Count:</b>"+res.favouritecount+
+		"<br><b>Status Count:</b>"+res.statuscount+
+		"<br><b>Followers:</b>"+res.followers;
+		document.getElementById("header").style.color="#"+res.headercolor;
+		document.getElementById("header").innerHTML=res.names;
+		document.getElementById("modalheader").style.backgroundColor="#5cb85c";
+	}
+localStorage.setItem("createdts","1970-01-01T00:00:00Z");
+	document.getElementById("putdata").innerHTML=information;}
+	
+	});
+}
+catch(e){alert(e);}
+}
+	
+
+function showtweets()
+
+{
+try{
+termid=document.getElementById("tweetsdisplay").value;
+document.getElementById("loader").style.display="block";
+document.getElementById("putdata").innerHTML="";
+createdts=localStorage.getItem("createdts");
+//alert(localStorage.getItem("terms"));
+	$.ajax({
+type:"GET",
+	url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/1/"+createdts+"/"+termid,
+
+success:function(result)
+{
+
+	document.getElementById("loader").style.display="none";
+	modal.style.display = "block";
+res=JSON.parse(result);
+var information="<br>";
+//document.getElementById("header").innerHTML="";
+	if(res.message=="Failed"){information=res.reason;
+		document.getElementById
+alert(information);
+("modalheader").style.backgroundColor="#EE0000";
+		document.getElementById("header").innerHTML="";
+		}
+	else{
+var tweets=res.tweets.split("||");
+var users=res.users.split("||");
+for(var i=1;i<tweets.length;i++)
+{		
+information=information+"<b>"+users[i]+" :</b>"+ tweets[i]+"<br>";	}
+
+}
+//alert(res.createdts);
+if(tweets.length<=20)
+{localStorage.setItem("createdts","1970-01-01T00:00:00Z");}
+else
+localStorage.setItem("createdts",res.createdts);
+document.getElementById("putdata").innerHTML=information;}
+
+	});
+}
+catch(e){alert(e);}
+}
+
+
+
+
+
+
+</script>
+
 {% endblock %}
+
+

@@ -14,3 +14,186 @@ main {
 .project-home .network-buttons > div {
     text-align: center;
 }
+
+.highcharts-button-symbol
+{
+display:none;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(420deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(420deg); }
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 10%; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+
+.termname:hover
+{
+color:blue;
+}
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+.modal-body {padding: 22px 50px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+
+/*desingere button for data display of user*/
+
+@import url(http://fonts.googleapis.com/css?family=Nunito:300);
+
+
+a    { text-decoration: none; }
+.databutton
+{
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  color: #0C5;
+
+  font-size: 24px;
+  font-family: "Nunito", sans-serif;
+  font-weight: 300;
+  
+  /*margin: 5em auto;
+  padding: 20px 0;
+  width: 29%;
+  height:3%;
+*/
+  background: #0D6;
+  border: 1px solid #0D6;
+  color: #FFF;
+  overflow: hidden;
+  
+  transition: all 0.5s;
+}
+
+.databutton:hover, .databutton:active 
+{
+  text-decoration: none;
+  color: #0C5;
+  border-color: #0C5;
+  background: #FFF;
+}
+
+.databutton span 
+{
+  display: inline-block;
+  position: relative;
+  padding-right: 0;
+  
+  transition: padding-right 0.5s;
+}
+
+.databutton span:after 
+{
+  content: ' ';  
+  position: absolute;
+  top: 0;
+  right: -18px;
+  opacity: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: -10px;
+
+  background: rgba(0, 0, 0, 0);
+  border: 3px solid #FFF;
+  border-top: none;
+  border-right: none;
+
+  transition: opacity 0.5s, top 0.5s, right 0.5s;
+  transform: rotate(-45deg);
+}
+
+.databutton:hover span, .databutton:active span 
+{
+  padding-right: 30px;
+}
+
+.databutton:hover span:after, .databutton:active span:after 
+{
+  transition: opacity 0.5s, top 0.5s, right 0.5s;
+  opacity: 1;
+  border-color: #0C5;
+  right: 0;
+  top: 50%;
+}
+
+

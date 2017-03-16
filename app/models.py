@@ -1,4 +1,5 @@
 import json
+import dateutil.parser
 from datetime import datetime
 from bson.objectid import ObjectId
 from pymongo import MongoClient
@@ -235,7 +236,7 @@ class DB(object):
 
             return resp
 
-    def get_collector_detail(self, project_id, collector_id):
+    def get_collector_detail(self, project_id, collector_id,project_name=None):
         """
         When passed a collector_id, returns that collectors details
         """
@@ -250,7 +251,10 @@ class DB(object):
             collector = coll.find_one({'_id': ObjectId(collector_id)})
             if collector:
                 collector['_id'] = str(collector['_id'])
-                resp = {'status': 1, 'message': 'Success', 'collector': collector}
+		configdb = project_name+'_'+str(collector['_id'])
+	        project_db = self.connection[configdb]
+		details = project_db.tweets.count()
+                resp = {'status': 1, 'message': 'Success', 'collector': collector,'size':details}
             else:
                 resp = {'status': 0, 'message': 'Failed'}
         else:
@@ -281,6 +285,61 @@ class DB(object):
 
         return resp
 
+
+    def get_term_details(self,project_name,network,collector_name,collector_id,term_id,project_id):
+		project = self.get_project_detail(project_id)
+	
+		if project['status']:
+	            configdb = project_name+'_'+collector_id
+	            project_db = self.connection[configdb]
+		    coll = project_db.tweets
+		    resp=project_db.tweets.create_index('user.id_str',unique=False)
+		    project_db.tweets.create_index('in_reply_to_user_id',unique=False)	
+		    tweets = coll.find_one({'user.id_str':term_id})
+	            if tweets:
+	                resp = {'status': 1, 'message': 'success', 
+				'names':tweets['user']['screen_name'],
+				'description':tweets['user']['description'], 
+				'friends_count':str(tweets['user']['friends_count']),
+				'location':tweets['user']['location'],
+				'favouritecount':str(tweets['user']['favourites_count']),
+				'followers':str(tweets['user']['followers_count']),
+				'headercolor':tweets['user']['profile_text_color'],
+				'statuscount':str(tweets['user']['statuses_count'])}
+	            else:
+	                resp = {'status': 0, 'message': 'Failed','reason':'Data Not Found,TermId Not present'}
+		else:
+			resp = {'status': 0, 'message': 'Failed','reason':'Data Not Found,DataBase Not present'}
+		return resp	
+
+    def get_term_accounttweets_details(self,project_name,network,collector_name,collector_id,term_id,project_id,createdts):
+	try:		
+		project = self.get_project_detail(project_id)
+		tweettext=""
+		users=""
+		i=0
+		updatecreatedts=createdts
+		if project['status']:
+	            configdb = project_name+'_'+collector_id
+	            project_db = self.connection[configdb]
+		    coll = project_db.tweets
+		  	
+		    for tweets in coll.find({'in_reply_to_user_id':long(term_id),'created_ts':{'$gte':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).limit(20):
+				updatecreatedts=tweets['created_ts']
+				tweettext=tweettext+ "||" +tweets['text']	
+				users=users+"||"+tweets['user']['name']
+
+		    if i==0:
+			#t1=data['list']
+	                resp = {'status': 1, 'message': 'success', 'tweets':tweettext,'users':users,'createdts':str(updatecreatedts)}
+	            else:
+	                resp = {'status': 0, 'message': 'Failed','reason':'Data Not Found,TermId Not present'}
+		else:
+			resp = {'status': 0, 'message': 'Failed','reason':'Data Not Found,DataBase Not present'}
+		return resp
+	except Exception as e:
+		return {'message':'Failed','reason':str(e)}
+		
     def set_collector_detail(self, project_id, collector_name, network, collection_type, api_credentials_dict,
                              terms_list, api=None, languages=None, location=None, start_date=None, end_date=None):
         """

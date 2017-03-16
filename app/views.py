@@ -9,7 +9,7 @@ from models import DB
 from forms import LoginForm, CreateForm, NewCollectorForm, ProcessControlForm, SetupForm, UpdateCollectorForm, \
     UpdateCollectorTermsForm
 from tasks import start_daemon, stop_daemon, restart_daemon, start_workers
-
+import json
 
 @app.route('/setup', methods=['GET', 'POST'])
 def setup():
@@ -189,6 +189,9 @@ def admin_home(admin_id):
     return render_template('admin_home.html', admin_detail=g.admin, project_list=project_list)
 
 
+
+
+
 @app.route('/<project_name>/home/', methods=['GET', 'POST'])
 @app.route('/<project_name>/home/<task_id>', methods=['GET', 'POST'])
 @load_project
@@ -201,7 +204,7 @@ def home(project_name, task_id=None):
     # Loads project details if an admin
     if g.admin is not None:
         _aload_project(project_name)
-
+	
     # Loads in terms # count for panel
     project_detail = g.project
     if project_detail['collectors']:
@@ -214,6 +217,7 @@ def home(project_name, task_id=None):
                 collector['num_terms'] = len(collector['terms_list'])
     else:
         project_detail['num_collectors'] = 0
+
 
     return render_template('home.html', project_detail=project_detail)
 
@@ -595,9 +599,9 @@ def collector(project_name, network, collector_id, task_id=None):
 
     # Loads collector info for the page
     db = DB()
-    resp = db.get_collector_detail(g.project['project_id'], collector_id)
+    resp = db.get_collector_detail(g.project['project_id'], collector_id,project_name)
     collector = resp['collector']
-
+    value=resp['size']		  
     # Loads active status
     resp = db.check_process_status(g.project['project_id'], 'collect', collector_id=collector_id)
     active_status = resp['message']
@@ -616,9 +620,23 @@ def collector(project_name, network, collector_id, task_id=None):
         collector=collector,
         active_status=active_status,
         form=form,
-        task_status=task_status
-    )
+        task_status=task_status,
+	project_name=project_name,
+	network=network,
+	totalsize=value,
+	projectid=g.project['project_id']
+)
 
+
+@app.route('/display_termsvalue/<project_id>/<project_name>/<network>/<collector_name>/<collector_id>/<tweets_retrive_flag>/<isodate>/<term_id>',
+methods=['GET'])
+def Display_TermsValue(project_id,project_name,network,collector_name,collector_id,tweets_retrive_flag=0,isodate=None,term_id=None):
+	db = DB()
+	if(tweets_retrive_flag=="0"):
+		resp=db.get_term_details(project_name,'twitter',collector_name,collector_id,term_id,project_id)
+	else:
+		resp=db.get_term_accounttweets_details(project_name,'twitter',collector_name,collector_id,term_id,project_id,isodate)			
+	return json.dumps(resp)
 
 @app.route('/collector_control/<collector_id>', methods=['POST'])
 @load_project
@@ -656,6 +674,7 @@ def collector_control(collector_id):
                                 network=network,
                                 collector_id=collector_id,
                                 task_id=task.task_id))
+
 
 
 @app.route('/processor_control/<network>', methods=['POST'])
