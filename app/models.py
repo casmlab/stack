@@ -290,7 +290,7 @@ class DB(object):
 		project = self.get_project_detail(project_id)
 	
 		if project['status']:
-	            configdb = project_name+'_'+collector_id
+	            configdb = project_name+'_'+project_id
 	            project_db = self.connection[configdb]
 		    coll = project_db.tweets
 		    resp=project_db.tweets.create_index('user.id_str',unique=False)
@@ -320,7 +320,7 @@ class DB(object):
 		i=0
 		updatecreatedts=createdts
 		if project['status']:
-	            configdb = project_name+'_'+collector_id
+	            configdb = project_name+'_'+project_id
 	            project_db = self.connection[configdb]
 		    coll = project_db.tweets
 		  	
