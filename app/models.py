@@ -251,10 +251,10 @@ class DB(object):
             collector = coll.find_one({'_id': ObjectId(collector_id)})
             if collector:
                 collector['_id'] = str(collector['_id'])
-		configdb = project_name+'_'+str(collector['_id'])
-	        project_db = self.connection[configdb]
-		details = project_db.tweets.count()
-                resp = {'status': 1, 'message': 'Success', 'collector': collector,'size':details}
+		#configdb = project_name+'_'+str(project_id)
+	    #	 project_db = self.connection[configdb]
+		#		details = project_db.tweets.count()
+                resp = {'status': 1, 'message': 'Success', 'collector': collector,'size':'0'}
             else:
                 resp = {'status': 0, 'message': 'Failed'}
         else:
