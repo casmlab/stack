@@ -236,12 +236,12 @@ class DB(object):
 
             return resp
 
-    def get_collector_detail(self, project_id, collector_id,project_name=None):
+    def get_collector_detail(self, project_id, collector_id,project_name=None,status=None):
         """
         When passed a collector_id, returns that collectors details
         """
         project = self.get_project_detail(project_id)
-
+		details=0
         if project['status']:
             configdb = project['project_config_db']
 
@@ -251,10 +251,11 @@ class DB(object):
             collector = coll.find_one({'_id': ObjectId(collector_id)})
             if collector:
                 collector['_id'] = str(collector['_id'])
-		#configdb = project_name+'_'+str(project_id)
-	    #	 project_db = self.connection[configdb]
-		#		details = project_db.tweets.count()
-                resp = {'status': 1, 'message': 'Success', 'collector': collector,'size':'0'}
+				if(status=='getCounts'):
+					configdb = project_name+'_'+project_id
+					project_db = self.connection[configdb]
+					details = project_db.tweets.count()
+                resp = {'status': 1, 'message': 'Success', 'collector': collector,'size':str(details)}
             else:
                 resp = {'status': 0, 'message': 'Failed'}
         else:

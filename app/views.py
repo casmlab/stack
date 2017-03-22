@@ -599,7 +599,7 @@ def collector(project_name, network, collector_id, task_id=None):
 
     # Loads collector info for the page
     db = DB()
-    resp = db.get_collector_detail(g.project['project_id'], collector_id,project_name)
+    resp = db.get_collector_detail(g.project['project_id'], collector_id,project_name,'getCounts')
     collector = resp['collector']
     value=resp['size']		  
     # Loads active status
