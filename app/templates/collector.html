@@ -30,7 +30,7 @@
 
       <br />
 	
-<!--Total Data in DB-->
+<!-Total Data in DB-->
  <div class="row">
         <div class="col-sm-4"><strong>Total Tweets/Comments</strong></div>
         <div class="col-sm-8">{{ totalsize }}</div>
@@ -115,7 +115,7 @@
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          {{ task_status }}
+          {{  task_status  }}
         </div>
       {% endif %}
 
@@ -127,9 +127,11 @@
       </form>
     </div>
 <br>
- <span class="glyphicon glyphicon-search"></span>
+ <img src="/static/images.png" style="height:auto;width:30px"></img>
 <input type="text" id="searchterm" onkeyup="search()" placeholder="Search for Terms.."  class="col-sm-2">
-    <!-- Terms Table -->
+
+    
+<!-- Terms Table -->
     <div class="col-md-7">
       <h3>Collector Terms</h3>
 
@@ -206,7 +208,7 @@ No Terms Found</span>
       <p></p>
     </div>
 
-<button id="tweetsdisplay" class="databutton" value="" text="1"  onclick="showtweets()"><span>View Content</span></button>
+<button id="tweetsdisplay" class="databutton" value="" text="1"  onclick="showtweets()"><span>View Tweets</span></button>
   </div>
 
 </div>
@@ -242,6 +244,8 @@ if(flag==1)
 else
 document.getElementById("notermmsg").style.display="none";
 }
+
+
 /*method in views.py*/
 function ShowContent(termid)
 
@@ -330,9 +334,6 @@ document.getElementById("putdata").innerHTML=information;}
 }
 catch(e){alert(e);}
 }
-
-
-
 
 
 
