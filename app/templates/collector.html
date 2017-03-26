@@ -198,6 +198,7 @@ No Terms Found</span>
       <span id="closemodel" onclick="closemodel()" class="close">&times;</span>
       <h2 id="header"></h2>
     </div>
+<span style="display:none;left:50%;top:-4%;position:relative" id="pagenum"></span>
     <div class="modal-body" id="putdata">
       <p></p>
       <p></p>
@@ -208,7 +209,8 @@ No Terms Found</span>
       <p></p>
     </div>
 
-<button id="tweetsdisplay" class="databutton" value="" text="1"  onclick="showtweets()"><span>View Tweets</span></button>
+<button id="tweetsdisplay" class="databutton" value="" text="1"  onclick="showtweets()"><span>View Content</span></button>
+
   </div>
 
 </div>
@@ -251,6 +253,7 @@ function ShowContent(termid)
 
 {
 try{
+document.getElementById("pagenum").style.display="none";
 document.getElementById("tweetsdisplay").value=termid;
 document.getElementById("loader").style.display="block";
 document.getElementById("putdata").innerHTML="";
@@ -280,6 +283,7 @@ success:function(result)
 		document.getElementById("modalheader").style.backgroundColor="#5cb85c";
 	}
 localStorage.setItem("createdts","1970-01-01T00:00:00Z");
+localStorage.setItem("setpagenumber","0");
 	document.getElementById("putdata").innerHTML=information;}
 	
 	});
@@ -303,7 +307,7 @@ type:"GET",
 
 success:function(result)
 {
-
+	document.getElementById("pagenum").style.display="block";
 	document.getElementById("loader").style.display="none";
 	modal.style.display = "block";
 res=JSON.parse(result);
@@ -316,6 +320,8 @@ alert(information);
 		document.getElementById("header").innerHTML="";
 		}
 	else{
+var pagenum=parseInt(localStorage.getItem("setpagenumber"));
+pagenum=pagenum+1;
 var tweets=res.tweets.split("||");
 var users=res.users.split("||");
 for(var i=1;i<tweets.length;i++)
@@ -325,12 +331,18 @@ information=information+"<b>"+users[i]+" :</b>"+ tweets[i]+"<br>";	}
 }
 //alert(res.createdts);
 if(tweets.length<=20)
-{localStorage.setItem("createdts","1970-01-01T00:00:00Z");}
+{localStorage.setItem("createdts","1970-01-01T00:00:00Z");
+localStorage.setItem("setpagenumber",0);
+pagenum=0;
+}
 else
 localStorage.setItem("createdts",res.createdts);
-document.getElementById("putdata").innerHTML=information;}
+document.getElementById("putdata").innerHTML=information;
+document.getElementById("pagenum").innerHTML= "<b>Page: "+ pagenum+"</b>";
+localStorage.setItem("setpagenumber",pagenum);
+	}
 
-	});
+});
 }
 catch(e){alert(e);}
 }
