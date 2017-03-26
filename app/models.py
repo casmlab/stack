@@ -340,6 +340,14 @@ class DB(object):
 		return resp
 	except Exception as e:
 		return {'message':'Failed','reason':str(e)}
+
+    def set_active_collectors(self,command,collector_id,db_name):
+	project_db = self.connection[db_name]
+	coll = project_db.config
+	active=1
+	if(command=='stop'):
+		active=0
+	coll.update({'collectors.collector_id':collector_id},{'$set':{'collectors.0.active':active}})
 		
     def set_collector_detail(self, project_id, collector_name, network, collection_type, api_credentials_dict,
                              terms_list, api=None, languages=None, location=None, start_date=None, end_date=None):

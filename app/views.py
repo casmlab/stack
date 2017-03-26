@@ -612,9 +612,10 @@ def collector(project_name, network, collector_id, task_id=None):
         resp = celery.AsyncResult(task_id)
         if resp.state == 'PENDING':
             task_status = 'Collector start/shutdown still in progress...'
+	    db.set_active_collectors('stop',collector_id,'config')
         else:
             task_status = 'Collector start/shutdown completed.'
-
+	    db.set_active_collectors(session['command'],collector_id,'config')		
     return render_template(
         'collector.html',
         collector=collector,
@@ -668,7 +669,7 @@ def collector_control(collector_id):
             task = stop_daemon.apply_async(kwargs=task_args, queue='stack-stop')
         elif command == 'restart':
             task = restart_daemon.apply_async(kwargs=task_args, queue='stack-start')
-
+	session['command']=str(command)
         return redirect(url_for('collector',
                                 project_name=g.project['project_name'],
                                 network=network,
@@ -736,7 +737,7 @@ def inserter_control(network):
             task = stop_daemon.apply_async(kwargs=task_args, queue='stack-stop')
         elif command == 'restart':
             task = restart_daemon.apply_async(kwargs=task_args, queue='stack-start')
-
+	
     return redirect(url_for('network_home',
                             project_name=g.project['project_name'],
                             network=network,
@@ -752,3 +753,4 @@ def _aload_project(project_name):
     g.project = db.get_project_detail(str(resp['_id']))
 
     session['project_id'] = str(resp['_id'])
+
