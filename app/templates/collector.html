@@ -253,10 +253,24 @@ function ShowContent(termid)
 
 {
 try{
+modal.style.display = "block";
+document.getElementById("tweetsdisplay").style.display="block";
 document.getElementById("pagenum").style.display="none";
 document.getElementById("tweetsdisplay").value=termid;
 document.getElementById("loader").style.display="block";
 document.getElementById("putdata").innerHTML="";
+/*checks to see if termid is blank,in that case please check config db*/
+
+	if(termid=="None"){
+	document.getElementById("header").innerHTML="";
+	document.getElementById("modalheader").style.backgroundColor="#EE0000";
+	document.getElementById("putdata").innerHTML="TermId is blank,check config DB";
+	document.getElementById("tweetsdisplay").style.display="none";
+document.getElementById("loader").style.display="none";
+	}
+
+else{
+
 	$.ajax({
 type:"GET",
 	url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/0/0/"+termid,
@@ -264,7 +278,6 @@ type:"GET",
 success:function(result)
 {
 	document.getElementById("loader").style.display="none";
-	modal.style.display = "block";
 	res=JSON.parse(result);
 	if(res.message=="Failed"){information=res.reason;
 		document.getElementById("modalheader").style.backgroundColor="#EE0000";
@@ -282,13 +295,15 @@ success:function(result)
 		document.getElementById("header").innerHTML=res.names;
 		document.getElementById("modalheader").style.backgroundColor="#5cb85c";
 	}
+/*sets time to fetch tweets ,all tweets must be after epoch time*/
 localStorage.setItem("createdts","1970-01-01T00:00:00Z");
 localStorage.setItem("setpagenumber","0");
 	document.getElementById("putdata").innerHTML=information;}
 	
 	});
 }
-catch(e){alert(e);}
+}catch(e){alert(e);}
+
 }
 	
 
@@ -333,13 +348,12 @@ information=information+"<b>"+users[i]+" :</b>"+ tweets[i]+"<br>";	}
 if(tweets.length<=20)
 {localStorage.setItem("createdts","1970-01-01T00:00:00Z");
 localStorage.setItem("setpagenumber",0);
+pagenum=0;
 }
 else
 localStorage.setItem("createdts",res.createdts);
 document.getElementById("putdata").innerHTML=information;
 document.getElementById("pagenum").innerHTML= "<b>Page: "+ pagenum+"</b>";
-if(tweets.length<=20)
-pagenum=0
 localStorage.setItem("setpagenumber",pagenum);
 	}
 
