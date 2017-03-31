@@ -8,8 +8,10 @@
 
       <ul>
         <li><strong>Collectors:</strong> {{ project_detail['num_collectors'] }}</li>
+      <li><strong>Total Tweets/Comments</strong> {{ project_detail['totalsize'] }}</li>
       </ul>
 
+project_name
       <hr />
 
       <h4>Available Networks</h4>
@@ -38,7 +40,7 @@
             </tr>
           </thead>
           <tbody>
-
+		
             {% for collector in project_detail['collectors'] %}
               <tr>
                 <td><a href="{{url_for('collector', project_name=project_detail['project_name'],

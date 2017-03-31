@@ -236,7 +236,7 @@ class DB(object):
 
             return resp
 
-    def get_collector_detail(self, project_id,collector_id,project_name=None,status=None):
+    def get_collector_detail(self, project_id,collector_id,project_name=None):
         """
         When passed a collector_id, returns that collectors details
         """
@@ -251,11 +251,7 @@ class DB(object):
             collector = coll.find_one({'_id': ObjectId(collector_id)})
             if collector:
                 collector['_id'] = str(collector['_id'])
-		if(status=='getCounts'):
-			configdb = project_name+'_'+project_id
-			project_db = self.connection[configdb]
-			details = str(project_db.tweets.count())
-                resp = {'status': 1, 'message': 'Success', 'collector': collector,'size':details}
+                resp = {'status': 1, 'message': 'Success', 'collector': collector}
             else:
                 resp = {'status': 0, 'message': 'Failed'}
         else:
@@ -286,7 +282,16 @@ class DB(object):
 
         return resp
 
-
+    def get_project_data_size(self,project_name):
+	configdb=self.connection['config']	
+	coll=configdb.config
+	coll.create_index('project_name',unique=False)
+	projectid_resp=coll.find({'project_name':str(project_name)},{'_id':1})
+	projectid=projectid_resp[0]['_id']
+	dbname=project_name+"_"+str(projectid)
+	project_db=self.connection[dbname]
+	
+	return str(project_db.tweets.count())
     def get_term_details(self,project_name,network,collector_name,collector_id,term_id,project_id):
 		project = self.get_project_detail(project_id)
 	

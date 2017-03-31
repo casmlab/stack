@@ -201,6 +201,8 @@ def home(project_name, task_id=None):
     """
     Renders a project account's homepage
     """
+    db=DB()
+    value=db.get_project_data_size(project_name)		
     # Loads project details if an admin
     if g.admin is not None:
         _aload_project(project_name)
@@ -218,7 +220,7 @@ def home(project_name, task_id=None):
     else:
         project_detail['num_collectors'] = 0
 
-
+    project_detail['totalsize']=value 	
     return render_template('home.html', project_detail=project_detail)
 
 
@@ -599,9 +601,8 @@ def collector(project_name, network, collector_id, task_id=None):
 
     # Loads collector info for the page
     db = DB()
-    resp = db.get_collector_detail(g.project['project_id'], collector_id,project_name,'getCounts')
-    collector = resp['collector']
-    value=resp['size']		  
+    resp = db.get_collector_detail(g.project['project_id'], collector_id,project_name)
+    collector = resp['collector']	  
     # Loads active status
     resp = db.check_process_status(g.project['project_id'], 'collect', collector_id=collector_id)
     active_status = resp['message']
@@ -624,7 +625,6 @@ def collector(project_name, network, collector_id, task_id=None):
         task_status=task_status,
 	project_name=project_name,
 	network=network,
-	totalsize=value,
 	projectid=g.project['project_id']
 )
 
