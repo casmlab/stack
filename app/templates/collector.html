@@ -275,7 +275,9 @@ success:function(result)
 	document.getElementById("loader").style.display="none";
 	res=JSON.parse(result);
 	if(res.message=="Failed"){information=res.reason;
-		document.getElementById("modalheader").style.backgroundColor="#EE0000";
+		document.getElementById
+alert(information);
+("modalheader").style.backgroundColor="#EE0000";
 		document.getElementById("header").innerHTML="";
 		}
 	else{
@@ -285,7 +287,11 @@ success:function(result)
 		"<br><b>Location:</b>"+res.location+
 		"<br><b>Favourite Count:</b>"+res.favouritecount+
 		"<br><b>Status Count:</b>"+res.statuscount+
-		"<br><b>Followers:</b>"+res.followers;
+		"<br><b>Followers:</b>"+res.followers+"<br><b>Total URLS:</b>"+res.totalurls+
+"<br><b>Total Tweets with Hashtags:</b>"+res.hashtagscounter
++"<br><b>Total Tweets with exclamation :</b>"+res.tweets_with_exclaim+
+"<br><b>Total Tweets with User mentions :</b>"+res.tweets_user_mentions+
+"<br><b>Total Tweets with Re-tweeted :</b>"+res.total_retweets;
 		document.getElementById("header").style.color="#"+res.headercolor;
 		document.getElementById("header").innerHTML=res.names;
 		document.getElementById("modalheader").style.backgroundColor="#5cb85c";
@@ -322,6 +328,7 @@ success:function(result)
 	modal.style.display = "block";
 res=JSON.parse(result);
 var information="<br>";
+var usertweetinfo="<br><b>----Tweets by---------"+document.getElementById("header").innerHTML+"----</b><br>";
 //document.getElementById("header").innerHTML="";
 	if(res.message=="Failed"){information=res.reason;
 		document.getElementById
@@ -332,11 +339,16 @@ alert(information);
 	else{
 var pagenum=parseInt(localStorage.getItem("setpagenumber"));
 pagenum=pagenum+1;
+var usertweets=res.tweetsfromaccount.split("||");
 var tweets=res.tweets.split("||");
 var users=res.users.split("||");
 for(var i=1;i<tweets.length;i++)
 {		
 information=information+"<b>"+users[i]+" :</b>"+ tweets[i]+"<br>";	}
+
+for(var i=1;i<usertweets.length;i++)
+{		
+usertweetinfo=usertweetinfo+ usertweets[i]+"<br>";	}
 
 }
 //alert(res.createdts);
@@ -347,7 +359,7 @@ localStorage.setItem("setpagenumber",0);
 }
 else
 localStorage.setItem("createdts",res.createdts);
-document.getElementById("putdata").innerHTML=information;
+document.getElementById("putdata").innerHTML=information+usertweetinfo;
 document.getElementById("pagenum").innerHTML= "<b>Page: "+ pagenum+"</b>";
 if(tweets.length<=20)
 pagenum=0;

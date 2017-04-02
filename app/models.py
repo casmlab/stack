@@ -293,6 +293,7 @@ class DB(object):
 	
 	return str(project_db.tweets.count())
     def get_term_details(self,project_name,network,collector_name,collector_id,term_id,project_id):
+	try:		
 		project = self.get_project_detail(project_id)
 	
 		if project['status']:
@@ -302,6 +303,18 @@ class DB(object):
 		    resp=project_db.tweets.create_index('user.id_str',unique=False)
 		    project_db.tweets.create_index('in_reply_to_user_id',unique=False)	
 		    tweets = coll.find_one({'user.id_str':term_id})
+	#	    urlcounter=coll.find({'in_reply_to_user_id':long(term_id),'counts.urls':{'$gte':1}}).count()
+		    dictvalue=self.Get_Set_OtherParameters(term_id,project_id,project_name,coll)	
+		    #urlcounter=dictvalue['urlcounter']	
+		    #hashtagscounter=dictvalue['hashtagscounter']	
+		    '''    urlcounters=coll.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]},{'counts.urls':1,'counts.hashtags':1})
+		    for val in urlcounters:
+			if(val['counts']['urls']>=1):
+				urlcounter=urlcounter+1	
+			if(val['counts']['hashtags']>=1):
+				hashtagscounter=hashtagscounter+1	
+		     #coll.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}],'counts.hashtags':{'$gte':1}}).count() '''
+		  #  retweetscount		
 	            if tweets:
 	                resp = {'status': 1, 'message': 'success', 
 				'names':tweets['user']['screen_name'],
@@ -311,17 +324,92 @@ class DB(object):
 				'favouritecount':str(tweets['user']['favourites_count']),
 				'followers':str(tweets['user']['followers_count']),
 				'headercolor':tweets['user']['profile_text_color'],
-				'statuscount':str(tweets['user']['statuses_count'])}
+				'statuscount':str(tweets['user']['statuses_count']),
+				'totalurls':dictvalue['urlcounter'],
+				'hashtagscounter':dictvalue['hashtagscounter'],
+				'tweets_with_exclaim':dictvalue['exclamationmark'],
+				'tweets_user_mentions':dictvalue['user_mentionscounts'],
+				'total_retweets':dictvalue['retweetedcounts']	}
 	            else:
 	                resp = {'status': 0, 'message': 'Failed','reason':'Data Not Found,TermId Not present'}
 		else:
 			resp = {'status': 0, 'message': 'Failed','reason':'Data Not Found,DataBase Not present'}
 		return resp	
-
+	except Exception as e:
+		return {'message':'Failed','reason':str(e)}
+#gets additional parameters like total url ,total exclamation in tweets,it will store data in the config db with the parameters
+    def Get_Set_OtherParameters(self,term_id,project_id,projectname,collobject):
+		dbname=projectname+'Config'
+		flag=0
+		parameters=dict()
+		project_db=self.connection[dbname]
+		collectionname='extraparameters_value'
+		if('extraparameters_value' in project_db.collection_names()):
+			flag=1
+			valueid=term_id+project_id
+			tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
+			tweetcount_config=project_db.extraparameters_value.find_one({'valueid':valueid},{'total':1,'hashtags':1,
+'urls':1,
+'user_mentions':1,
+'totalretweets':1,
+'favorite_count':1,
+'exclamationmark':1})			
+			if(tweetcount_config==None):
+				flag=0
+				
+			else:
+				if(tweetcount_config['total']!=tweetcount_in_db):
+					flag=0
+					project_db.extraparameters_value.remove({'valueid':valueid})	
+				else:
+					parameters['urlcounter']=tweetcount_config['urls']	
+					parameters['hashtagscounter']=tweetcount_config['hashtags']
+					parameters['exclamationmark']=tweetcount_config['exclamationmark']
+					parameters['user_mentionscounts']=tweetcount_config['user_mentions']
+					parameters['totalcounts']=tweetcount_config['total']
+			   		parameters['retweetedcounts']=tweetcount_config['totalretweets']
+				   	parameters['favorite_count']=tweetcount_config['favorite_count']
+		
+		if(flag==0):
+			parameters['urlcounter']=0	
+			parameters['hashtagscounter']=0	
+			parameters['exclamationmark']=0
+			parameters['user_mentionscounts']=0	
+			parameters['totalcounts']=0	
+	   		parameters['retweetedcounts']=0 
+		   	parameters['favorite_count']=0		
+		 	urlcounters=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]},{'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})
+			for val in urlcounters:
+				parameters['totalcounts']=parameters['totalcounts']+1
+				if("!" in val['text']):
+					parameters['exclamationmark']=parameters['exclamationmark']+1
+				if(val['favorite_count']>=1):
+					parameters['favorite_count']=parameters['favorite_count']+1
+				if(val['retweeted']==True):
+					parameters['retweetedcounts']=parameters['retweetedcounts']+1
+				if(val['counts']['user_mentions']>=1):	
+					parameters['user_mentionscounts']=parameters['user_mentionscounts']+1	
+				if(val['counts']['urls']>=1):
+					parameters['urlcounter']=parameters['urlcounter']+1
+				if(val['counts']['hashtags']>=1):
+					parameters['hashtagscounter']=parameters['hashtagscounter']+1
+			result=project_db.extraparameters_value.insert({
+"valueid":term_id+project_id,
+"hashtags":parameters['hashtagscounter'],
+"urls":parameters['urlcounter'],
+"total":parameters['totalcounts'],
+"user_mentions":parameters['user_mentionscounts'],
+"totalretweets":parameters['retweetedcounts'],
+"favorite_count":parameters['favorite_count'],
+"exclamationmark":parameters['exclamationmark']
+})
+		return parameters
+		
     def get_term_accounttweets_details(self,project_name,network,collector_name,collector_id,term_id,project_id,createdts):
 	try:		
 		project = self.get_project_detail(project_id)
 		tweettext=""
+		tweetfromaccount=""
 		users=""
 		i=0
 		updatecreatedts=createdts
@@ -334,10 +422,11 @@ class DB(object):
 				updatecreatedts=tweets['created_ts']
 				tweettext=tweettext+ "||" +tweets['text']	
 				users=users+"||"+tweets['user']['name']
-
+		    for tweets in coll.find({'in_reply_to_user_id':None,'user.id_str':term_id,'created_ts':{'$gte':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).limit(40):
+			tweetfromaccount=tweetfromaccount+"||"+tweets['text']
 		    if i==0:
 			#t1=data['list']
-	                resp = {'status': 1, 'message': 'success', 'tweets':tweettext,'users':users,'createdts':str(updatecreatedts)}
+	                resp = {'status': 1, 'message': 'success', 'tweets':tweettext,'tweetsfromaccount':tweetfromaccount,'users':users,'createdts':str(updatecreatedts)}
 	            else:
 	                resp = {'status': 0, 'message': 'Failed','reason':'Data Not Found,TermId Not present'}
 		else:
