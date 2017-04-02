@@ -341,11 +341,13 @@ class DB(object):
     def Get_Set_OtherParameters(self,term_id,project_id,projectname,collobject):
 		dbname=projectname+'Config'
 		flag=0
+		statusinfo=-1
 		parameters=dict()
 		project_db=self.connection[dbname]
 		collectionname='extraparameters_value'
 		if('extraparameters_value' in project_db.collection_names()):
 			flag=1
+			statusinfo=0	
 			valueid=term_id+project_id
 			tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
 			tweetcount_config=project_db.extraparameters_value.find_one({'valueid':valueid},{'total':1,'hashtags':1,
@@ -355,11 +357,12 @@ class DB(object):
 'favorite_count':1,
 'exclamationmark':1})			
 			if(tweetcount_config==None):
-				flag=1
-				
+				flag=0
+				statusinfo=1
 			else:
 				if(tweetcount_config['total']!=tweetcount_in_db):
 					flag=0
+					statusinfo=2
 					project_db.extraparameters_value.remove({'valueid':valueid})	
 				else:
 					flag=1
@@ -402,7 +405,8 @@ class DB(object):
 "user_mentions":parameters['user_mentionscounts'],
 "totalretweets":parameters['retweetedcounts'],
 "favorite_count":parameters['favorite_count'],
-"exclamationmark":parameters['exclamationmark']
+"exclamationmark":parameters['exclamationmark'],
+"statusinfo":statusinfo
 })
 		return parameters
 		
