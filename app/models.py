@@ -355,11 +355,11 @@ class DB(object):
 'favorite_count':1,
 'exclamationmark':1})			
 			if(tweetcount_config==None):
-				flag=0
+				flag=1
 				
 			else:
 				if(tweetcount_config['total']!=tweetcount_in_db):
-					flag=1
+					flag=0
 					project_db.extraparameters_value.remove({'valueid':valueid})	
 				else:
 					flag=1
