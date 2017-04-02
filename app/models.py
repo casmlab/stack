@@ -305,7 +305,7 @@ class DB(object):
 		    tweets = coll.find_one({'user.id_str':term_id})
 	#	    urlcounter=coll.find({'in_reply_to_user_id':long(term_id),'counts.urls':{'$gte':1}}).count()
 		    dictvalue=self.Get_Set_OtherParameters(term_id,project_id,project_name,coll)	
-		    #urlcounter=dictvalue['urlcounter']	
+		    urlcounter=dictvalue['urlcounter']	
 		    #hashtagscounter=dictvalue['hashtagscounter']	
 		    '''    urlcounters=coll.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]},{'counts.urls':1,'counts.hashtags':1})
 		    for val in urlcounters:
@@ -362,6 +362,7 @@ class DB(object):
 					flag=0
 					project_db.extraparameters_value.remove({'valueid':valueid})	
 				else:
+					flag=1
 					parameters['urlcounter']=tweetcount_config['urls']	
 					parameters['hashtagscounter']=tweetcount_config['hashtags']
 					parameters['exclamationmark']=tweetcount_config['exclamationmark']
