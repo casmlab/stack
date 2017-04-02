@@ -339,7 +339,8 @@ class DB(object):
 		return {'message':'Failed','reason':str(e)}
 #gets additional parameters like total url ,total exclamation in tweets,it will store data in the config db with the parameters
     def Get_Set_OtherParameters(self,term_id,project_id,projectname,collobject):
-		dbname=projectname+'Config'
+	 try:
+        dbname=projectname+'Config'
 		flag=0
 		statusinfo=-1
 		parameters=dict()
@@ -405,6 +406,8 @@ class DB(object):
 "statusinfo":statusinfo
 })
 		return parameters
+	 except Exception as e:
+			return str(e)
 		
     def get_term_accounttweets_details(self,project_name,network,collector_name,collector_id,term_id,project_id,createdts):
 	try:		
