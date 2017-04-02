@@ -359,7 +359,7 @@ class DB(object):
 				
 			else:
 				if(tweetcount_config['total']!=tweetcount_in_db):
-					flag=0
+					flag=1
 					project_db.extraparameters_value.remove({'valueid':valueid})	
 				else:
 					flag=1
