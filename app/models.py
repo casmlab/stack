@@ -351,7 +351,7 @@ class DB(object):
 'totalretweets':1,
 'favorite_count':1,
 'exclamationmark':1})
-		if(tweetcount_config not None):
+		if(tweetcount_config != None):
 			flag=1
 			statusinfo=0	
 			valueid=term_id+project_id
