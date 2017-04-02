@@ -356,11 +356,6 @@ class DB(object):
 			flag=1
 			statusinfo=0	
 			tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
-			
-		#	if(tweetcount_config==None):
-		#		flag=0
-		#		statusinfo=1
-		#	else:
 			if(tweetcount_config['total']!=tweetcount_in_db):
 					flag=0
 					statusinfo=2
