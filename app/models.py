@@ -345,26 +345,27 @@ class DB(object):
 		parameters=dict()
 		project_db=self.connection[dbname]
 		collectionname='extraparameters_value'
-		if("extraparameters_value" in project_db.collection_names()):
-			flag=1
-			statusinfo=0	
-			valueid=term_id+project_id
-			tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
-			tweetcount_config=project_db.extraparameters_value.find_one({'valueid':valueid},{'total':1,'hashtags':1,
+		tweetcount_config=project_db.extraparameters_value.find_one({'valueid':valueid},{'total':1,'hashtags':1,
 'urls':1,
 'user_mentions':1,
 'totalretweets':1,
 'favorite_count':1,
-'exclamationmark':1})			
-			if(tweetcount_config==None):
-				flag=0
-				statusinfo=1
-			else:
-				if(tweetcount_config['total']!=tweetcount_in_db):
+'exclamationmark':1})
+		if(tweetcount_config not None):
+			flag=1
+			statusinfo=0	
+			valueid=term_id+project_id
+			tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
+			
+		#	if(tweetcount_config==None):
+		#		flag=0
+		#		statusinfo=1
+		#	else:
+			if(tweetcount_config['total']!=tweetcount_in_db):
 					flag=0
 					statusinfo=2
 					project_db.extraparameters_value.remove({'valueid':valueid})	
-				else:
+			else:
 					flag=1
 					parameters['urlcounter']=tweetcount_config['urls']	
 					parameters['hashtagscounter']=tweetcount_config['hashtags']
