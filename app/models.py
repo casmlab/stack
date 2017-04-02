@@ -345,7 +345,7 @@ class DB(object):
 		parameters=dict()
 		project_db=self.connection[dbname]
 		collectionname='extraparameters_value'
-		if('extraparameters_value' in project_db.collection_names()):
+		if("extraparameters_value" in project_db.collection_names()):
 			flag=1
 			statusinfo=0	
 			valueid=term_id+project_id
