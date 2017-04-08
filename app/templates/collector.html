@@ -275,9 +275,7 @@ success:function(result)
 	document.getElementById("loader").style.display="none";
 	res=JSON.parse(result);
 	if(res.message=="Failed"){information=res.reason;
-		document.getElementById
-alert(information);
-("modalheader").style.backgroundColor="#EE0000";
+		document.getElementById("modalheader").style.backgroundColor="#EE0000";
 		document.getElementById("header").innerHTML="";
 		}
 	else{
@@ -303,7 +301,7 @@ localStorage.setItem("setpagenumber","0");
 	
 	});
 }
-}catch(e){alert(e);}
+}catch(e){}
 
 }
 	
@@ -331,9 +329,7 @@ var information="<br>";
 var usertweetinfo="<br><b>----Tweets by---------"+document.getElementById("header").innerHTML+"----</b><br>";
 //document.getElementById("header").innerHTML="";
 	if(res.message=="Failed"){information=res.reason;
-		document.getElementById
-alert(information);
-("modalheader").style.backgroundColor="#EE0000";
+		document.getElementById("modalheader").style.backgroundColor="#EE0000";
 		document.getElementById("header").innerHTML="";
 		}
 	else{
@@ -368,7 +364,7 @@ localStorage.setItem("setpagenumber",pagenum);
 
 });
 }
-catch(e){alert(e);}
+catch(e){}
 }
 
 
