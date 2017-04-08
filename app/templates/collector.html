@@ -274,8 +274,11 @@ success:function(result)
 {
 	document.getElementById("loader").style.display="none";
 	res=JSON.parse(result);
-	if(res.message=="Failed"){information=res.reason;
+	if(res.message=="Failed"){
+	
+	//information=res.reason;
 		document.getElementById("modalheader").style.backgroundColor="#EE0000";
+		information="Value Not Found";
 		document.getElementById("header").innerHTML="";
 		}
 	else{
@@ -328,7 +331,9 @@ res=JSON.parse(result);
 var information="<br>";
 var usertweetinfo="<br><b>----Tweets by---------"+document.getElementById("header").innerHTML+"----</b><br>";
 //document.getElementById("header").innerHTML="";
-	if(res.message=="Failed"){information=res.reason;
+	if(res.message=="Failed"){
+	information="Value Not Found";
+	//information=res.reason;
 		document.getElementById("modalheader").style.backgroundColor="#EE0000";
 		document.getElementById("header").innerHTML="";
 		}
