@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
   <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"/>
+  <script src="{{ url_for('static', filename='collector.js') }}"></script>
+
 <div class="row">
     <div class="col-md-5">
       <div class="page-header">
@@ -221,7 +223,7 @@ No Terms Found</span>
 
 
 <script>
-var tabstatus=1;
+var tabstatus = 1;
 var totalcols = document.getElementById('showtable').getElementsByTagName("td").length;
 var entries = 0;
 var rows = document.getElementById('showtable').rows[0].cells.length;
@@ -236,45 +238,24 @@ var searchterm = "";
 var i = 0,
     flag = 1;
 
-function search() {
-    flag = 1;
-    searchterm = document.getElementById("searchterm").value;
-    for (i = 0; i < terms.length; i++) {
-        terms[i].parentElement.style.display = "";
-        if (!terms[i].innerHTML.includes(searchterm)) {
-            terms[i].parentElement.style.display = "none";
-        } else {
-            flag = 0;
-        }
-
-    }
-    if (flag == 1) {
-        document.getElementById("notermmsg").style.display = "block";
-    } else
-        document.getElementById("notermmsg").style.display = "none";
-}
-
-
 /*method in views.py*/
 function ShowContent(termid)
 
 {
     try {
         modal.style.display = "block";
-	document.getElementById("tabs").style.display="none";
+        document.getElementById("tabs").style.display = "none";
         document.getElementById("tweetsdisplay").style.display = "block";
         document.getElementById("pagenum").style.display = "none";
         document.getElementById("tweetsdisplay").value = termid;
-        document.getElementById("loader").style.display = "block";
+        showLoader();
         document.getElementById("putdata").innerHTML = "";
         /*checks to see if termid is blank,in that case please check config db*/
 
         if (termid == "None") {
-            document.getElementById("header").innerHTML = "";
-            document.getElementById("modalheader").style.backgroundColor = "#EE0000";
-            document.getElementById("putdata").innerHTML = "No data for the term";
+            dataretriveFailed("No Data for the Term")
             document.getElementById("tweetsdisplay").style.display = "none";
-            document.getElementById("loader").style.display = "none";
+            hideLoader()
         } else {
 
             $.ajax({
@@ -282,125 +263,56 @@ function ShowContent(termid)
                 url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/0/0/0/" + termid,
 
                 success: function(result) {
-					
-                    document.getElementById("loader").style.display = "none";
+
+                    hideLoader();
                     res = JSON.parse(result);
-                    if (res.message == "Failed") {
+                    if (res.message == "Failed")
+                        dataretriveFailed(res.reason)
+                    else
+                        displayTermValues(res);
 
-                        //information=res.reason;
-                        document.getElementById("modalheader").style.backgroundColor = "#EE0000";
-                        information = res.reason;
-                        document.getElementById("header").innerHTML = "";
-                    } else {
-                        information = "<b>Name:</b>" + res.names +
-                            "<br> <b> Description </b>: " + res.description + "<br>" +
-                            "<b>Friend Count</b>: " + res.friends_count +
-                            "<br><b>Location:</b>" + res.location +
-                            "<br><b>Favourite Count:</b>" + res.favouritecount +
-                            "<br><b>Status Count:</b>" + res.statuscount +
-                            "<br><b>Followers:</b>" + res.followers + "<br><b>Total URLS:</b>" + res.totalurls +
-                            "<br><b>Total Tweets with Hashtags:</b>" + res.hashtagscounter +
-                            "<br><b>Total Tweets with exclamation :</b>" + res.tweets_with_exclaim +
-                            "<br><b>Total Tweets with User mentions :</b>" + res.tweets_user_mentions +
-                            "<br><b>Total Tweets with Re-tweeted :</b>" + res.total_retweets;
-                        document.getElementById("header").style.color = "#" + res.headercolor;
-                        document.getElementById("header").innerHTML = res.names;
-                        document.getElementById("modalheader").style.backgroundColor = "#5cb85c";
-                    }
-                    /*sets time to fetch tweets ,all tweets must be after epoch time*/
-                    SetPageandDateDefault();
-                    document.getElementById("putdata").innerHTML = information;
                 }
-
             });
         }
-		
-    } catch (e) {}
+
+    } catch (e) {
+        console.log(e);
+    }
 
 }
 
 
-function SetPageandDateDefault() {
-    localStorage.setItem("createdts", "1970-01-01T00:00:00Z");
-    localStorage.setItem("setpagenumber", "0");
-}
 
-function switchTab(tabnumber) {
-    SetPageandDateDefault();
-    tabstatus=tabnumber;
-if(tabnumber==1)
-{
-$("#tweetsby").removeClass("active");
-$("#tweetsto").addClass("active");
-}
-else{
-$("#tweetsto").removeClass("active");
-$("#tweetsby").addClass("active");
-	}
-    showtweets(tabnumber)
-}
-
-function showtweets(tabnumber=tabstatus)
+function showtweets(tabnumber = tabstatus)
 
 {
     try {
-	document.getElementById("tabs").style.display="block";
+        document.getElementById("tabs").style.display = "block";
         termid = document.getElementById("tweetsdisplay").value;
-        document.getElementById("loader").style.display = "block";
+        showLoader();
         document.getElementById("putdata").innerHTML = "";
         createdts = localStorage.getItem("createdts");
         //alert(localStorage.getItem("terms"));
         $.ajax({
             type: "GET",
-            url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/1/" + createdts + "/"+tabnumber+"/" + termid,
+            url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/1/" + createdts + "/" + tabnumber + "/" + termid,
 
             success: function(result) {
                 document.getElementById("pagenum").style.display = "block";
-                document.getElementById("loader").style.display = "none";
+                hideLoader();
                 modal.style.display = "block";
                 res = JSON.parse(result);
-                var information = "<br>";
-                var usertweetinfo = "<br><b>----Tweets by---------" + document.getElementById("header").innerHTML + "----</b><br>";
-                //document.getElementById("header").innerHTML="";
-                if (res.message == "Failed") {
-                    information = res.reason;
-                    //information=res.reason;
-                    document.getElementById("modalheader").style.backgroundColor = "#EE0000";
-                    document.getElementById("header").innerHTML = "";
-                } else {
-                    var pagenum = parseInt(localStorage.getItem("setpagenumber"));
-                    pagenum = pagenum + 1;
-                    var tweets = res.tweets.split("||");
-                    var users = res.users.split("||");
-                    if (tabnumber == 1) {
-                        for (var i = 1; i < tweets.length; i++) {
-                            information = information + "<b>" + users[i] + " :</b>" + tweets[i] + "<br>";
-                        }
-                    } else {
-                        for (var i = 1; i < tweets.length; i++) {
-                            information = information + tweets[i] + "<br>";
-                        }
 
-                    }
-
-                }
-                //alert(res.createdts);
-                if (tweets.length <= 20) {
-                    localStorage.setItem("createdts", "1970-01-01T00:00:00Z");
-                    localStorage.setItem("setpagenumber", 0);
-
-                } else
-                    localStorage.setItem("createdts", res.createdts);
-                document.getElementById("putdata").innerHTML = information;
-                document.getElementById("pagenum").innerHTML = "<b>Page: " + pagenum + "</b>";
-                if (tweets.length <= 20)
-                    pagenum = 0;
-                localStorage.setItem("setpagenumber", pagenum);
+                if (res.message == "Failed")
+                    dataretriveFailed(res.reason)
+                else displayTweets(res, tabnumber);
             }
-
         });
-    } catch (e) {}
+    } catch (e) {
+        console.log(e);
+    }
 }
+
 </script>
 
 {% endblock %}
