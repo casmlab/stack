@@ -629,14 +629,14 @@ def collector(project_name, network, collector_id, task_id=None):
 )
 
 
-@app.route('/display_termsvalue/<project_id>/<project_name>/<network>/<collector_name>/<collector_id>/<tweets_retrive_flag>/<isodate>/<term_id>',
+@app.route('/display_termsvalue/<project_id>/<project_name>/<network>/<collector_name>/<collector_id>/<tweets_retrive_flag>/<isodate>/<tabstatus>/<term_id>',
 methods=['GET'])
-def Display_TermsValue(project_id,project_name,network,collector_name,collector_id,tweets_retrive_flag=0,isodate=None,term_id=None):
+def Display_TermsValue(project_id,project_name,network,collector_name,collector_id,tabstatus,tweets_retrive_flag=0,isodate=None,term_id=None):
 	db = DB()
 	if(tweets_retrive_flag=="0"):
 		resp=db.get_term_details(project_name,'twitter',collector_name,collector_id,term_id,project_id)
 	else:
-		resp=db.get_term_accounttweets_details(project_name,'twitter',collector_name,collector_id,term_id,project_id,isodate)			
+		resp=db.get_term_accounttweets_details(project_name,'twitter',collector_name,collector_id,term_id,project_id,isodate,int(tabstatus))			
 	return json.dumps(resp)
 
 @app.route('/collector_control/<collector_id>', methods=['POST'])

@@ -192,6 +192,15 @@ No Terms Found</span>
     <div class="modal-header" id="modalheader">
       <span id="closemodel" onclick="closemodel()" class="close">&times;</span>
       <h2 id="header"></h2>
+
+<ul class="nav nav-tabs" id="tabs">
+    <li id="tweetsto" class="active col-sm-6"><a style="cursor:pointer;color:black" onclick="switchTab(1)"><span>TWEETS TO TERM</span></a></li>
+ <li  id="tweetsby" class="col-sm-6"><a style="cursor:pointer;color:black" onclick="switchTab(2)"><span>TWEETS BY TERM</span></a></li>
+        	
+
+</ul>
+
+
     </div>
 <span style="display:none;left:50%;top:-4%;position:relative" id="pagenum"></span>
     <div class="modal-body" id="putdata">
@@ -212,34 +221,37 @@ No Terms Found</span>
 
 
 <script>
-var totalcols=document.getElementById('showtable').getElementsByTagName("td").length;
-var entries=0;
-var rows=document.getElementById('showtable').rows[0].cells.length;
-if(rows!=0)
-entries=totalcols/rows;
+var tabstatus=1;
+var totalcols = document.getElementById('showtable').getElementsByTagName("td").length;
+var entries = 0;
+var rows = document.getElementById('showtable').rows[0].cells.length;
+if (rows != 0)
+    entries = totalcols / rows;
 
-document.getElementById("termvalues").innerHTML=entries;
-document.getElementById("notermmsg").style.display="none";
-var terms=document.getElementsByClassName('termname');
-document.getElementById("searchterm").value="";
-var searchterm="";var i=0,flag=1;
+document.getElementById("termvalues").innerHTML = entries;
+document.getElementById("notermmsg").style.display = "none";
+var terms = document.getElementsByClassName('termname');
+document.getElementById("searchterm").value = "";
+var searchterm = "";
+var i = 0,
+    flag = 1;
 
-function search()
-{
-	flag=1;
-	searchterm=document.getElementById("searchterm").value;
-	for(i=0;i<terms.length;i++)
-		{
-		terms[i].parentElement.style.display="";
-			if(!terms[i].innerHTML.includes(searchterm)){
-			terms[i].parentElement.style.display="none";}
-			else {flag=0;}			
-				
-		}
-if(flag==1)
-{document.getElementById("notermmsg").style.display="block";}
-else
-document.getElementById("notermmsg").style.display="none";
+function search() {
+    flag = 1;
+    searchterm = document.getElementById("searchterm").value;
+    for (i = 0; i < terms.length; i++) {
+        terms[i].parentElement.style.display = "";
+        if (!terms[i].innerHTML.includes(searchterm)) {
+            terms[i].parentElement.style.display = "none";
+        } else {
+            flag = 0;
+        }
+
+    }
+    if (flag == 1) {
+        document.getElementById("notermmsg").style.display = "block";
+    } else
+        document.getElementById("notermmsg").style.display = "none";
 }
 
 
@@ -247,133 +259,146 @@ document.getElementById("notermmsg").style.display="none";
 function ShowContent(termid)
 
 {
-try{
-modal.style.display = "block";
-document.getElementById("tweetsdisplay").style.display="block";
-document.getElementById("pagenum").style.display="none";
-document.getElementById("tweetsdisplay").value=termid;
-document.getElementById("loader").style.display="block";
-document.getElementById("putdata").innerHTML="";
-/*checks to see if termid is blank,in that case please check config db*/
+    try {
+        modal.style.display = "block";
+	document.getElementById("tabs").style.display="none";
+        document.getElementById("tweetsdisplay").style.display = "block";
+        document.getElementById("pagenum").style.display = "none";
+        document.getElementById("tweetsdisplay").value = termid;
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("putdata").innerHTML = "";
+        /*checks to see if termid is blank,in that case please check config db*/
 
-	if(termid=="None"){
-	document.getElementById("header").innerHTML="";
-	document.getElementById("modalheader").style.backgroundColor="#EE0000";
-	document.getElementById("putdata").innerHTML="TermId is blank,check config DB";
-	document.getElementById("tweetsdisplay").style.display="none";
-document.getElementById("loader").style.display="none";
-	}
+        if (termid == "None") {
+            document.getElementById("header").innerHTML = "";
+            document.getElementById("modalheader").style.backgroundColor = "#EE0000";
+            document.getElementById("putdata").innerHTML = "TermId is blank,check config DB";
+            document.getElementById("tweetsdisplay").style.display = "none";
+            document.getElementById("loader").style.display = "none";
+        } else {
 
+            $.ajax({
+                type: "GET",
+                url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/0/0/0/" + termid,
+
+                success: function(result) {
+                    document.getElementById("loader").style.display = "none";
+                    res = JSON.parse(result);
+                    if (res.message == "Failed") {
+
+                        //information=res.reason;
+                        document.getElementById("modalheader").style.backgroundColor = "#EE0000";
+                        information = res.reason;
+                        document.getElementById("header").innerHTML = "";
+                    } else {
+                        information = "<b>Name:</b>" + res.names +
+                            "<br> <b> Description </b>: " + res.description + "<br>" +
+                            "<b>Friend Count</b>: " + res.friends_count +
+                            "<br><b>Location:</b>" + res.location +
+                            "<br><b>Favourite Count:</b>" + res.favouritecount +
+                            "<br><b>Status Count:</b>" + res.statuscount +
+                            "<br><b>Followers:</b>" + res.followers + "<br><b>Total URLS:</b>" + res.totalurls +
+                            "<br><b>Total Tweets with Hashtags:</b>" + res.hashtagscounter +
+                            "<br><b>Total Tweets with exclamation :</b>" + res.tweets_with_exclaim +
+                            "<br><b>Total Tweets with User mentions :</b>" + res.tweets_user_mentions +
+                            "<br><b>Total Tweets with Re-tweeted :</b>" + res.total_retweets;
+                        document.getElementById("header").style.color = "#" + res.headercolor;
+                        document.getElementById("header").innerHTML = res.names;
+                        document.getElementById("modalheader").style.backgroundColor = "#5cb85c";
+                    }
+                    /*sets time to fetch tweets ,all tweets must be after epoch time*/
+                    SetPageandDateDefault();
+                    document.getElementById("putdata").innerHTML = information;
+                }
+
+            });
+        }
+    } catch (e) {}
+
+}
+
+
+function SetPageandDateDefault() {
+    localStorage.setItem("createdts", "1970-01-01T00:00:00Z");
+    localStorage.setItem("setpagenumber", "0");
+}
+
+function switchTab(tabnumber) {
+    SetPageandDateDefault();
+    tabstatus=tabnumber;
+if(tabnumber==1)
+{
+$("#tweetsby").removeClass("active");
+$("#tweetsto").addClass("active");
+}
 else{
-
-	$.ajax({
-type:"GET",
-	url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/0/0/"+termid,
-
-success:function(result)
-{
-	document.getElementById("loader").style.display="none";
-	res=JSON.parse(result);
-	if(res.message=="Failed"){
-	
-	//information=res.reason;
-		document.getElementById("modalheader").style.backgroundColor="#EE0000";
-		information="Value Not Found";
-		document.getElementById("header").innerHTML="";
-		}
-	else{
-		information="<b>Name:</b>"+res.names +
-		"<br> <b> Description </b>: "+res.description+ "<br>" +
-		"<b>Friend Count</b>: "+res.friends_count+
-		"<br><b>Location:</b>"+res.location+
-		"<br><b>Favourite Count:</b>"+res.favouritecount+
-		"<br><b>Status Count:</b>"+res.statuscount+
-		"<br><b>Followers:</b>"+res.followers+"<br><b>Total URLS:</b>"+res.totalurls+
-"<br><b>Total Tweets with Hashtags:</b>"+res.hashtagscounter
-+"<br><b>Total Tweets with exclamation :</b>"+res.tweets_with_exclaim+
-"<br><b>Total Tweets with User mentions :</b>"+res.tweets_user_mentions+
-"<br><b>Total Tweets with Re-tweeted :</b>"+res.total_retweets;
-		document.getElementById("header").style.color="#"+res.headercolor;
-		document.getElementById("header").innerHTML=res.names;
-		document.getElementById("modalheader").style.backgroundColor="#5cb85c";
+$("#tweetsto").removeClass("active");
+$("#tweetsby").addClass("active");
 	}
-/*sets time to fetch tweets ,all tweets must be after epoch time*/
-localStorage.setItem("createdts","1970-01-01T00:00:00Z");
-localStorage.setItem("setpagenumber","0");
-	document.getElementById("putdata").innerHTML=information;}
-	
-	});
+    showtweets(tabnumber)
 }
-}catch(e){}
 
-}
-	
-
-function showtweets()
+function showtweets(tabnumber=tabstatus)
 
 {
-try{
-termid=document.getElementById("tweetsdisplay").value;
-document.getElementById("loader").style.display="block";
-document.getElementById("putdata").innerHTML="";
-createdts=localStorage.getItem("createdts");
-//alert(localStorage.getItem("terms"));
-	$.ajax({
-type:"GET",
-	url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/1/"+createdts+"/"+termid,
+    try {
+	document.getElementById("tabs").style.display="block";
+        termid = document.getElementById("tweetsdisplay").value;
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("putdata").innerHTML = "";
+        createdts = localStorage.getItem("createdts");
+        //alert(localStorage.getItem("terms"));
+        $.ajax({
+            type: "GET",
+            url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/1/" + createdts + "/"+tabnumber+"/" + termid,
 
-success:function(result)
-{
-	document.getElementById("pagenum").style.display="block";
-	document.getElementById("loader").style.display="none";
-	modal.style.display = "block";
-res=JSON.parse(result);
-var information="<br>";
-var usertweetinfo="<br><b>----Tweets by---------"+document.getElementById("header").innerHTML+"----</b><br>";
-//document.getElementById("header").innerHTML="";
-	if(res.message=="Failed"){
-	information="Value Not Found";
-	//information=res.reason;
-		document.getElementById("modalheader").style.backgroundColor="#EE0000";
-		document.getElementById("header").innerHTML="";
-		}
-	else{
-var pagenum=parseInt(localStorage.getItem("setpagenumber"));
-pagenum=pagenum+1;
-var usertweets=res.tweetsfromaccount.split("||");
-var tweets=res.tweets.split("||");
-var users=res.users.split("||");
-for(var i=1;i<tweets.length;i++)
-{		
-information=information+"<b>"+users[i]+" :</b>"+ tweets[i]+"<br>";	}
+            success: function(result) {
+                document.getElementById("pagenum").style.display = "block";
+                document.getElementById("loader").style.display = "none";
+                modal.style.display = "block";
+                res = JSON.parse(result);
+                var information = "<br>";
+                var usertweetinfo = "<br><b>----Tweets by---------" + document.getElementById("header").innerHTML + "----</b><br>";
+                //document.getElementById("header").innerHTML="";
+                if (res.message == "Failed") {
+                    information = res.reason;
+                    //information=res.reason;
+                    document.getElementById("modalheader").style.backgroundColor = "#EE0000";
+                    document.getElementById("header").innerHTML = "";
+                } else {
+                    var pagenum = parseInt(localStorage.getItem("setpagenumber"));
+                    pagenum = pagenum + 1;
+                    var tweets = res.tweets.split("||");
+                    var users = res.users.split("||");
+                    if (tabnumber == 1) {
+                        for (var i = 1; i < tweets.length; i++) {
+                            information = information + "<b>" + users[i] + " :</b>" + tweets[i] + "<br>";
+                        }
+                    } else {
+                        for (var i = 1; i < tweets.length; i++) {
+                            information = information + tweets[i] + "<br>";
+                        }
 
-for(var i=1;i<usertweets.length;i++)
-{		
-usertweetinfo=usertweetinfo+ usertweets[i]+"<br>";	}
+                    }
 
+                }
+                //alert(res.createdts);
+                if (tweets.length <= 20) {
+                    localStorage.setItem("createdts", "1970-01-01T00:00:00Z");
+                    localStorage.setItem("setpagenumber", 0);
+
+                } else
+                    localStorage.setItem("createdts", res.createdts);
+                document.getElementById("putdata").innerHTML = information;
+                document.getElementById("pagenum").innerHTML = "<b>Page: " + pagenum + "</b>";
+                if (tweets.length <= 20)
+                    pagenum = 0;
+                localStorage.setItem("setpagenumber", pagenum);
+            }
+
+        });
+    } catch (e) {}
 }
-//alert(res.createdts);
-if(tweets.length<=20)
-{localStorage.setItem("createdts","1970-01-01T00:00:00Z");
-localStorage.setItem("setpagenumber",0);
-
-}
-else
-localStorage.setItem("createdts",res.createdts);
-document.getElementById("putdata").innerHTML=information+usertweetinfo;
-document.getElementById("pagenum").innerHTML= "<b>Page: "+ pagenum+"</b>";
-if(tweets.length<=20)
-pagenum=0;
-localStorage.setItem("setpagenumber",pagenum);
-	}
-
-});
-}
-catch(e){}
-}
-
-
-
 </script>
 
 {% endblock %}
