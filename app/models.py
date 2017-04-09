@@ -350,7 +350,7 @@ class DB(object):
 				tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
 				if(tweetcount_config['total']!=tweetcount_in_db):
 						flag=0
-						statusinfo=2
+						statusinfo=tweetcount_config['total']!=tweetcount_in_db
 						project_db.extraparameters_value.remove({'valueid':valueid})	
 				else:
 						flag=1
@@ -385,6 +385,7 @@ class DB(object):
 						parameters['urlcounter']=parameters['urlcounter']+1
 					if(val['counts']['hashtags']>=1):
 						parameters['hashtagscounter']=parameters['hashtagscounter']+1
+					break
 				result=project_db.extraparameters_value.insert({
 	"valueid":term_id+project_id,
 	"hashtags":parameters['hashtagscounter'],

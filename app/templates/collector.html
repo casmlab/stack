@@ -260,7 +260,7 @@ function ShowContent(termid)
 
 {
     try {
-        modal.style.display = "block";
+        
 	document.getElementById("tabs").style.display="none";
         document.getElementById("tweetsdisplay").style.display = "block";
         document.getElementById("pagenum").style.display = "none";
@@ -313,6 +313,7 @@ function ShowContent(termid)
 
             });
         }
+		modal.style.display = "block";
     } catch (e) {}
 
 }
