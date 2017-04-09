@@ -385,7 +385,7 @@ class DB(object):
 						parameters['urlcounter']=parameters['urlcounter']+1
 					if(val['counts']['hashtags']>=1):
 						parameters['hashtagscounter']=parameters['hashtagscounter']+1
-					break
+					
 				result=project_db.extraparameters_value.insert({
 	"valueid":term_id+project_id,
 	"hashtags":parameters['hashtagscounter'],
