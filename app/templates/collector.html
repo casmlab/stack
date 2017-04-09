@@ -282,6 +282,7 @@ function ShowContent(termid)
                 url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/0/0/0/" + termid,
 
                 success: function(result) {
+					modal.style.display = "block";
                     document.getElementById("loader").style.display = "none";
                     res = JSON.parse(result);
                     if (res.message == "Failed") {
@@ -313,7 +314,7 @@ function ShowContent(termid)
 
             });
         }
-		modal.style.display = "block";
+		
     } catch (e) {}
 
 }

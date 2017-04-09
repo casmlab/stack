@@ -350,7 +350,7 @@ class DB(object):
 				tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
 				if(tweetcount_config['total']!=tweetcount_in_db):
 						flag=0
-						statusinfo=(tweetcount_config['total']!=tweetcount_in_db)
+						statusinfo=2
 						project_db.extraparameters_value.remove({'valueid':valueid})	
 				else:
 						flag=1
@@ -371,8 +371,8 @@ class DB(object):
 				parameters['retweetedcounts']=0 
 				parameters['favorite_count']=0		
 				urlcounters=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]},{'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})
+				parameters['totalcounts']=tweetcount_in_db	
 				for val in urlcounters:
-					parameters['totalcounts']=parameters['totalcounts']+1
 					if("!" in val['text']):
 						parameters['exclamationmark']=parameters['exclamationmark']+1
 					if(val['favorite_count']>=1):
