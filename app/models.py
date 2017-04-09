@@ -338,6 +338,7 @@ class DB(object):
 			valueid=term_id+project_id
 			project_db=self.connection[dbname]
 			collectionname='extraparameters_value'
+			tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
 			tweetcount_config=project_db.extraparameters_value.find_one({'valueid':valueid},{'total':1,'hashtags':1,
 	'urls':1,
 	'user_mentions':1,
@@ -347,7 +348,6 @@ class DB(object):
 			if(tweetcount_config != None):
 				flag=1
 				statusinfo=0	
-				tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
 				if(tweetcount_config['total']!=tweetcount_in_db):
 						flag=0
 						statusinfo=2
