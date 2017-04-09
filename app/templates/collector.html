@@ -260,7 +260,7 @@ function ShowContent(termid)
 
 {
     try {
-        
+        modal.style.display = "block";
 	document.getElementById("tabs").style.display="none";
         document.getElementById("tweetsdisplay").style.display = "block";
         document.getElementById("pagenum").style.display = "none";
@@ -282,7 +282,7 @@ function ShowContent(termid)
                 url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/0/0/0/" + termid,
 
                 success: function(result) {
-					modal.style.display = "block";
+					
                     document.getElementById("loader").style.display = "none";
                     res = JSON.parse(result);
                     if (res.message == "Failed") {
