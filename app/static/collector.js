@@ -18,7 +18,7 @@ function displayTweets(res,tabnumber)
 
                     }
 
-                 if (tweets.length ==0) {
+                 if (tweets.length ==1) {
                  setPageandDateDefault();
 				information="Information Not Present";
 				pagenum=0;
