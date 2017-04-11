@@ -310,7 +310,7 @@ function showtweets(tabnumber = tabstatus)
                 res = JSON.parse(result);
 
                 if (res.message == "Failed")
-                    dataretriveFailed(res.reason+" "++termidvalue.split("$$")[1])
+                    dataretriveFailed(res.reason+" "+termidvalue.split("$$")[1])
                 else displayTweets(res, tabnumber);
             }
         });
