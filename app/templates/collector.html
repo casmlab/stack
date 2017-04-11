@@ -147,7 +147,7 @@
 
           {% for term in collector['terms_list'] %}
             <tr >
-              <td  class="termname" id={{term['id']}}+'$$'+{{ term['term'] }} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
+              <td  class="termname" id={{term['id']}}"$$"{{ term['term'] }} onclick=ShowContent(this.id)">{{ term['term'] }}</td>
               <td >{{ term['term'] }}</td>
               <td>
                 {% if term['collect'] == 1 %}
