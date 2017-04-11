@@ -404,7 +404,7 @@ class DB(object):
 									parameters['hashtagscounter']=parameters['hashtagscounter']+1
 
 
-				parameters['totalcounts']=tweetcount_in_db#-parameters['duplicates']	
+				parameters['totalcounts']=tweetcount_in_db-parameters['duplicates']	
 				result=project_db.extraparameters_value.insert({
 	"valueid":term_id+project_id,
 	"hashtags":parameters['hashtagscounter'],
@@ -414,7 +414,7 @@ class DB(object):
 	"totalretweets":parameters['retweetedcounts'],
 	"favorite_count":parameters['favorite_count'],
 	"exclamationmark":parameters['exclamationmark'],
-	"statusinfo":val['in_reply_to_user_id'],
+	"statusinfo":statusinfo,
 	"duplicatevalues":parameters['duplicates']
 	})
 			return parameters
