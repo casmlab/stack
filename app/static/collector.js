@@ -114,9 +114,9 @@ $("#tweetsto").addClass("active");
 else if(tabnumber==3)
 {
 ShowContent(document.getElementById("tweetsdisplay").value);
-$("#tweetsto").removeClass("active");
+$("#termstats").removeClass("active");
 $("#tweetsby").removeClass("active");
-$("#termstats").addClass("active");
+$("#tweetsto").addClass("active");
 	
 	tabstatus=1;
 }	
