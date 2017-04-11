@@ -248,7 +248,7 @@ function ShowContent(termidvalue)
         document.getElementById("tabs").style.display = "none";
         document.getElementById("tweetsdisplay").style.display = "block";
         document.getElementById("pagenum").style.display = "none";
-        document.getElementById("tweetsdisplay").value = termid
+        document.getElementById("tweetsdisplay").value = termidvalue
 		document.getElementById("header").innerHTML="";
 		document.getElementById("modalheader").style.backgroundColor = "";
         showLoader();
@@ -270,7 +270,7 @@ function ShowContent(termidvalue)
                     hideLoader();
                     res = JSON.parse(result);
                     if (res.message == "Failed"){
-                        dataretriveFailed(res.reason+" "++termidvalue.split("$$")[1])
+                        dataretriveFailed(res.reason+" "+termidvalue.split("$$")[1])
 						 document.getElementById("tweetsdisplay").style.display = "none";
 						}
                     else
@@ -293,7 +293,8 @@ function showtweets(tabnumber = tabstatus)
 {
     try {
         document.getElementById("tabs").style.display = "block";
-        termid = document.getElementById("tweetsdisplay").value;
+        termidvalue = document.getElementById("tweetsdisplay").value;
+		termid=termidvalue.split("$$")[0]
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         createdts = localStorage.getItem("createdts");
