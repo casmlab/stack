@@ -18,7 +18,12 @@ function displayTweets(res,tabnumber)
 
                     }
 
-                
+                 if (tweets.length ==0) {
+                 setPageandDateDefault();
+				information="Information Not Present";
+				pagenum=0;
+				
+                }
                 //alert(res.createdts);
                 if (tweets.length <= 20) {
                  setPageandDateDefault()
