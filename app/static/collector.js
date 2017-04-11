@@ -118,7 +118,7 @@ $("#tweetsto").removeClass("active");
 $("#tweetsby").removeClass("active");
 $("#termstats").addClass("active");
 	
-	
+	tabstatus=1;
 }	
 
 else{
