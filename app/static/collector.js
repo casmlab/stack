@@ -106,14 +106,30 @@ function switchTab(tabnumber) {
     tabstatus=tabnumber;
 if(tabnumber==1)
 {
+$("#termstats").removeClass("active");
 $("#tweetsby").removeClass("active");
 $("#tweetsto").addClass("active");
+    showtweets(tabnumber)
 }
+else if(tabnumber==3)
+{
+ShowContent(document.getElementById("tweetsdisplay").value);
+$("#tweetsto").removeClass("active");
+$("#tweetsby").removeClass("active");
+$("#termstats").addClass("active");
+	
+	
+}	
+
 else{
 $("#tweetsto").removeClass("active");
+$("#termstats").removeClass("active");
 $("#tweetsby").addClass("active");
-	}
     showtweets(tabnumber)
+	}
+	
+	
+
 }
 
 
