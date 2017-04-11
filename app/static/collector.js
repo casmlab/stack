@@ -56,7 +56,7 @@ information = "<b>Name:</b>" + res.names +
                             "<br><b>Total Tweets with Re-tweeted :</b>" + res.total_retweets;
                         document.getElementById("header").style.color = "#" + res.headercolor;
                         document.getElementById("header").innerHTML = res.names+
-						  "<br><b>Total Tweets:</b>" + res.total_tweets;
+						  "<br><b>Tweets By "+res.names+" :</b>" + res.total_tweets;
                         document.getElementById("modalheader").style.backgroundColor = "#5cb85c";
                     
                     /*sets time to fetch tweets ,all tweets must be after epoch time*/
