@@ -434,12 +434,12 @@ class DB(object):
 	            project_db = self.connection[configdb]
 		    coll = project_db.tweets
 		    if(tabstatus==1):	
-			    for tweets in coll.find({'in_reply_to_user_id':long(term_id),'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).limit(20):
+			    for tweets in coll.find({'in_reply_to_user_id':long(term_id),'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('created_ts',-1)]).limit(20):
 					updatecreatedts=tweets['created_ts']
 					tweettext=tweettext+ "||" +tweets['text']	
 					users=users+"||"+tweets['user']['name']
 		    if(tabstatus==2):
-			    for tweets in coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).limit(20):
+			    for tweets in coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('created_ts',-1)]).limit(20):
 				updatecreatedts=tweets['created_ts']
 				tweettext=tweettext+"||"+tweets['text']
 		    if i==0:
