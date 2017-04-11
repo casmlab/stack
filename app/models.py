@@ -339,7 +339,7 @@ class DB(object):
 			valueid=term_id+project_id
 			project_db=self.connection[dbname]
 			collectionname='extraparameters_value'
-			tweetcount_in_db=collobject.find({'in_reply_to_user_id':long(term_id)}).count()
+			tweetcount_in_db=0#collobject.find({'in_reply_to_user_id':long(term_id)}).count()
 			tweetcount_in_db=tweetcount_in_db+collobject.find({'user.id_str':term_id}).count()
 			tweetcount_config=project_db.extraparameters_value.find_one({'valueid':valueid},{'total':1,'hashtags':1,
 	'urls':1,
@@ -378,7 +378,7 @@ class DB(object):
 				for i in range(0,2):
 					if(i==0):
 						set_errorflag_str="in_reply_id"
-						urlcounters=collobject.find({'in_reply_to_user_id':long(term_id)},{'in_reply_to_user_id':1,'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})	
+						#urlcounters=collobject.find({'in_reply_to_user_id':long(term_id)},{'in_reply_to_user_id':1,'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})	
 					else:	
 						set_errorflag_str="user_id"	
 						urlcounters=collobject.find({'user.id_str':term_id},{'in_reply_to_user_id':1,'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})			
@@ -387,8 +387,8 @@ class DB(object):
 						if(set_errorflag_str=="user_id"):
 							value=val['in_reply_to_user_id']
 							if(str(value)==str(term_id)):
-								duplicatevalues=1
-								parameters['duplicates']=parameters['duplicates']+1			
+								duplicatevalues=0
+								parameters['duplicates']=0#parameters['duplicates']+1			
 						if(duplicatevalues==0):
 								if("!" in val['text']):
 									parameters['exclamationmark']=parameters['exclamationmark']+1
