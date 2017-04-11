@@ -249,13 +249,14 @@ function ShowContent(termidvalue)
         document.getElementById("tweetsdisplay").style.display = "block";
         document.getElementById("pagenum").style.display = "none";
         document.getElementById("tweetsdisplay").value = termid
+		document.getElementById("header").innerHTML="";
 		document.getElementById("modalheader").style.backgroundColor = "";
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         /*checks to see if termid is blank,in that case please check config db*/
 
         if (termid == "None") {
-            dataretriveFailed("No Data for "+termidvalue.split("$$")[1])
+            dataretriveFailed("No Data for  "+termidvalue.split("$$")[1])
             document.getElementById("tweetsdisplay").style.display = "none";
             hideLoader()
         } else {
