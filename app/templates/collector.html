@@ -147,7 +147,7 @@
 
           {% for term in collector['terms_list'] %}
             <tr >
-              <td  class="termname" id={{term['id']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
+              <td  class="termname" id={{term['id']}}+'$$'+{{ term['term'] }} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
               <td >{{ term['term'] }}</td>
               <td>
                 {% if term['collect'] == 1 %}
@@ -239,10 +239,11 @@ var i = 0,
     flag = 1;
 
 /*method in views.py*/
-function ShowContent(termid)
+function ShowContent(termidvalue)
 
 {
     try {
+		termid=termidvalue.split("$$")[0]
         modal.style.display = "block";
         document.getElementById("tabs").style.display = "none";
         document.getElementById("tweetsdisplay").style.display = "block";
@@ -254,7 +255,7 @@ function ShowContent(termid)
         /*checks to see if termid is blank,in that case please check config db*/
 
         if (termid == "None") {
-            dataretriveFailed("No Data for the Term")
+            dataretriveFailed("No Data for "+termidvalue.split("$$")[1])
             document.getElementById("tweetsdisplay").style.display = "none";
             hideLoader()
         } else {
