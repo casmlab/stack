@@ -375,7 +375,7 @@ class DB(object):
 				parameters['favorite_count']=0	
 				parameters['duplicates']=0	
 				
-				for i in range(0,2):
+				for i in range(1,2):
 					if(i==0):
 						set_errorflag_str="in_reply_id"
 						#urlcounters=collobject.find({'in_reply_to_user_id':long(term_id)},{'in_reply_to_user_id':1,'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})	
