@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 from pymongo import MongoClient
 from werkzeug import check_password_hash
 from app import app
+import traceback
 
 class DB(object):
     """
@@ -303,9 +304,8 @@ class DB(object):
 		    resp=project_db.tweets.create_index('user.id_str',unique=False)
 		    project_db.tweets.create_index('in_reply_to_user_id',unique=False)	
 		    tweets = coll.find_one({'user.id_str':term_id})
-	#	    urlcounter=coll.find({'in_reply_to_user_id':long(term_id),'counts.urls':{'$gte':1}}).count()
 		    dictvalue=self.Get_Set_OtherParameters(term_id,project_id,project_name,coll)	
-		    urlcounter=dictvalue['urlcounter']	
+		#    urlcounter=dictvalue['urlcounter']	
 		    if tweets:
 	                resp = {'status': 1, 'message': 'success', 
 				'names':tweets['user']['screen_name'],
@@ -320,7 +320,8 @@ class DB(object):
 				'hashtagscounter':dictvalue['hashtagscounter'],
 				'tweets_with_exclaim':dictvalue['exclamationmark'],
 				'tweets_user_mentions':dictvalue['user_mentionscounts'],
-				'total_retweets':dictvalue['retweetedcounts']	}
+				'total_retweets':dictvalue['retweetedcounts'],
+				'total_tweets':dictvalue['totalcounts']	}
 	            else:
 	                resp = {'status': 0, 'message': 'Failed','reason':'No Data for the Term'}
 		else:
@@ -338,17 +339,19 @@ class DB(object):
 			valueid=term_id+project_id
 			project_db=self.connection[dbname]
 			collectionname='extraparameters_value'
-			tweetcount_in_db=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]}).count()
+			tweetcount_in_db=collobject.find({'in_reply_to_user_id':long(term_id)}).count()
+			tweetcount_in_db=tweetcount_in_db+collobject.find({'user.id_str':term_id}).count()
 			tweetcount_config=project_db.extraparameters_value.find_one({'valueid':valueid},{'total':1,'hashtags':1,
 	'urls':1,
 	'user_mentions':1,
 	'totalretweets':1,
 	'favorite_count':1,
-	'exclamationmark':1})
+	'exclamationmark':1,
+	'duplicatevalues':1})
 			if(tweetcount_config != None):
 				flag=1
 				statusinfo=0	
-				if(tweetcount_config['total']!=tweetcount_in_db):
+				if((tweetcount_config['total'])!=tweetcount_in_db):
 						flag=0
 						statusinfo=2
 						project_db.extraparameters_value.remove({'valueid':valueid})	
@@ -369,23 +372,39 @@ class DB(object):
 				parameters['user_mentionscounts']=0	
 				parameters['totalcounts']=0	
 				parameters['retweetedcounts']=0 
-				parameters['favorite_count']=0		
-				urlcounters=collobject.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'user.id_str':term_id}]},{'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})
-				parameters['totalcounts']=tweetcount_in_db	
-				for val in urlcounters:
-					if("!" in val['text']):
-						parameters['exclamationmark']=parameters['exclamationmark']+1
-					if(val['favorite_count']>=1):
-						parameters['favorite_count']=parameters['favorite_count']+1
-					if(val['retweeted']==True):
-						parameters['retweetedcounts']=parameters['retweetedcounts']+1
-					if(val['counts']['user_mentions']>=1):	
-						parameters['user_mentionscounts']=parameters['user_mentionscounts']+1	
-					if(val['counts']['urls']>=1):
-						parameters['urlcounter']=parameters['urlcounter']+1
-					if(val['counts']['hashtags']>=1):
-						parameters['hashtagscounter']=parameters['hashtagscounter']+1
-					
+				parameters['favorite_count']=0	
+				parameters['duplicates']=0	
+				
+				for i in range(0,2):
+					if(i==0):
+						set_errorflag_str="in_reply_id"
+						urlcounters=collobject.find({'in_reply_to_user_id':long(term_id)},{'in_reply_to_user_id':1,'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})	
+					else:	
+						set_errorflag_str="user_id"	
+						urlcounters=collobject.find({'user.id_str':term_id},{'in_reply_to_user_id':1,'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})			
+					for val in urlcounters:
+						duplicatevalues=0
+						if(set_errorflag_str=="user_id"):
+							value=val['in_reply_to_user_id']
+							if(str(value)==str(term_id)):
+								duplicatevalues=1
+								parameters['duplicates']=parameters['duplicates']+1			
+						if(duplicatevalues==0):
+								if("!" in val['text']):
+									parameters['exclamationmark']=parameters['exclamationmark']+1
+								if(val['favorite_count']>=1):
+									parameters['favorite_count']=parameters['favorite_count']+1
+								if(val['retweeted']==True):
+									parameters['retweetedcounts']=parameters['retweetedcounts']+1
+								if(val['counts']['user_mentions']>=1):	
+									parameters['user_mentionscounts']=parameters['user_mentionscounts']+1	
+								if(val['counts']['urls']>=1):
+									parameters['urlcounter']=parameters['urlcounter']+1
+								if(val['counts']['hashtags']>=1):
+									parameters['hashtagscounter']=parameters['hashtagscounter']+1
+
+
+				parameters['totalcounts']=tweetcount_in_db#-parameters['duplicates']	
 				result=project_db.extraparameters_value.insert({
 	"valueid":term_id+project_id,
 	"hashtags":parameters['hashtagscounter'],
@@ -395,12 +414,13 @@ class DB(object):
 	"totalretweets":parameters['retweetedcounts'],
 	"favorite_count":parameters['favorite_count'],
 	"exclamationmark":parameters['exclamationmark'],
-	"statusinfo":statusinfo
+	"statusinfo":val['in_reply_to_user_id'],
+	"duplicatevalues":parameters['duplicates']
 	})
 			return parameters
 		except Exception as e:
 			return str(e)
-		
+    	
     def get_term_accounttweets_details(self,project_name,network,collector_name,collector_id,term_id,project_id,createdts,tabstatus=1):
 	try:		
 		project = self.get_project_detail(project_id)
@@ -414,12 +434,12 @@ class DB(object):
 	            project_db = self.connection[configdb]
 		    coll = project_db.tweets
 		    if(tabstatus==1):	
-			    for tweets in coll.find({'in_reply_to_user_id':long(term_id),'created_ts':{'$gte':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).limit(20):
+			    for tweets in coll.find({'in_reply_to_user_id':long(term_id),'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).limit(20):
 					updatecreatedts=tweets['created_ts']
 					tweettext=tweettext+ "||" +tweets['text']	
 					users=users+"||"+tweets['user']['name']
 		    if(tabstatus==2):
-			    for tweets in coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}],'created_ts':{'$gte':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).limit(20):
+			    for tweets in coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).limit(20):
 				updatecreatedts=tweets['created_ts']
 				tweettext=tweettext+"||"+tweets['text']
 		    if i==0:

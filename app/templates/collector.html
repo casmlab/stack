@@ -247,7 +247,8 @@ function ShowContent(termid)
         document.getElementById("tabs").style.display = "none";
         document.getElementById("tweetsdisplay").style.display = "block";
         document.getElementById("pagenum").style.display = "none";
-        document.getElementById("tweetsdisplay").value = termid;
+        document.getElementById("tweetsdisplay").value = termid
+		document.getElementById("modalheader").style.backgroundColor = "";
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         /*checks to see if termid is blank,in that case please check config db*/
