@@ -196,9 +196,9 @@ No Terms Found</span>
       <h2 id="header"></h2>
 
 <ul class="nav nav-tabs" id="tabs">
-    <li id="tweetsto" class="active col-6"><a style="cursor:pointer;color:black" onclick="switchTab(1)"><span>TWEETS TO TERM</span></a></li>
- <li  id="tweetsby" class="col-6"><a style="cursor:pointer;color:black" onclick="switchTab(2)"><span>TWEETS BY TERM</span></a></li>
-  <li  id="termstats" class="col-6"><a style="cursor:pointer;color:black" onclick="switchTab(3)"><span>TERM STATS</span></a></li>
+    <li id="tweetsto" class="active col-6"><a style="cursor:pointer;color:black" onclick="switchTab(1)"><span id="repliesto">REPLIES TO </span></a></li>
+ <li  id="tweetsby" class="col-6"><a style="cursor:pointer;color:black" onclick="switchTab(2)"><span id="tweetsby">TWEETS BY </span></a></li>
+  <li  id="termstats" class="col-6"><a style="cursor:pointer;color:black" onclick="switchTab(3)"><span>SUMMARY STATS</span></a></li>
         	
 
 </ul>
@@ -245,8 +245,10 @@ function ShowContent(termidvalue)
 {
     try {
 		termid=termidvalue.split("$$")[0]
+		document.getElementById("repliesto").innerHTML = "REPLIES TO "+termidvalue.split("$$")[1];
+		document.getElementById("tweetsby").innerHTML = "TWEETS BY "+termidvalue.split("$$")[1];
         modal.style.display = "block";
-        document.getElementById("tabs").style.display = "none";
+        document.getElementById("tabs").style.display = "block";
         document.getElementById("tweetsdisplay").style.display = "block";
         document.getElementById("pagenum").style.display = "none";
         document.getElementById("tweetsdisplay").value = termidvalue

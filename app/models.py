@@ -303,6 +303,7 @@ class DB(object):
 		    coll = project_db.tweets
 		    resp=project_db.tweets.create_index('user.id_str',unique=False)
 		    project_db.tweets.create_index('in_reply_to_user_id',unique=False)	
+			project_db.tweets.create_index('created_ts',unique=False)	
 		    tweets = coll.find_one({'user.id_str':term_id})
 		    dictvalue=self.Get_Set_OtherParameters(term_id,project_id,project_name,coll)	
 		#    urlcounter=dictvalue['urlcounter']	
