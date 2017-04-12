@@ -111,6 +111,7 @@ if(tabnumber==1)
 $("#termstats").removeClass("active");
 $("#tweetsby").removeClass("active");
 $("#tweetsto").addClass("active");
+        document.getElementById("tweetsdisplay").style.display = "block";
     showtweets(tabnumber)
 }
 else if(tabnumber==3)
@@ -126,6 +127,7 @@ else{
 $("#tweetsto").removeClass("active");
 $("#termstats").removeClass("active");
 $("#tweetsby").addClass("active");
+        document.getElementById("tweetsdisplay").style.display = "block";
     showtweets(tabnumber)
 	}
 	
