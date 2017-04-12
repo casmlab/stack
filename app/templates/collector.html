@@ -147,7 +147,7 @@
 
           {% for term in collector['terms_list'] %}
             <tr >
-              <td  class="termname" id={{term['id']}}$${{ term['term'] }} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
+              <td  class="termname" id={{term['term']}}$${{term['id']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
               <td >{{ term['term'] }}</td>
               <td>
                 {% if term['collect'] == 1 %}
@@ -247,7 +247,7 @@ function ShowContent(termidvalue)
 		$("#tweetsby").removeClass("active");
 		$("#tweetsto").removeClass("active");
 		$("#termstats").addClass("active");
-		termid=termidvalue.split("$$")[0]
+		termid=termidvalue.split("$$")[1]
 		document.getElementById("repliesto").innerHTML = "REPLIES TO "+(termidvalue.split("$$")[1]);
 		document.getElementById("spantweetby").innerHTML = "TWEETS BY "+(termidvalue.split("$$")[1]);
         modal.style.display = "block";
@@ -262,7 +262,7 @@ function ShowContent(termidvalue)
         /*checks to see if termid is blank,in that case please check config db*/
 
         if (termid == "None") {
-            dataretriveFailed("No Data for  "+termidvalue.split("$$")[1])
+            dataretriveFailed("No Data for  "+termidvalue.split("$$")[0])
             document.getElementById("tweetsdisplay").style.display = "none";
             hideLoader()
         } else {
@@ -276,7 +276,7 @@ function ShowContent(termidvalue)
                     hideLoader();
                     res = JSON.parse(result);
                     if (res.message == "Failed"){
-                        dataretriveFailed(res.reason+" "+termidvalue.split("$$")[1])
+                        dataretriveFailed(res.reason+" "+termidvalue.split("$$")[0])
 						 document.getElementById("tweetsdisplay").style.display = "none";
 						}
                     else
@@ -300,7 +300,7 @@ function showtweets(tabnumber = tabstatus)
     try {
         document.getElementById("tabs").style.display = "block";
         termidvalue = document.getElementById("tweetsdisplay").value;
-		termid=termidvalue.split("$$")[0]
+		termid=termidvalue.split("$$")[1]
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         createdts = localStorage.getItem("createdts");
@@ -316,7 +316,7 @@ function showtweets(tabnumber = tabstatus)
                 res = JSON.parse(result);
 
                 if (res.message == "Failed")
-                    dataretriveFailed(res.reason+" "+termidvalue.split("$$")[1])
+                    dataretriveFailed(res.reason+" "+termidvalue.split("$$")[0])
                 else displayTweets(res, tabnumber);
             }
         });
