@@ -197,7 +197,7 @@ No Terms Found</span>
 
 <ul class="nav nav-tabs" id="tabs">
     <li id="tweetsto" class="active col-6"><a style="cursor:pointer;color:black" onclick="switchTab(1)"><span id="repliesto">REPLIES TO </span></a></li>
- <li  id="tweetsby" class="col-6"><a style="cursor:pointer;color:black" onclick="switchTab(2)"><span id="tweetsby">TWEETS BY </span></a></li>
+ <li  id="tweetsby" class="col-6"><a style="cursor:pointer;color:black" onclick="switchTab(2)"><span id="spantweetby">TWEETS BY </span></a></li>
   <li  id="termstats" class="col-6"><a style="cursor:pointer;color:black" onclick="switchTab(3)"><span>SUMMARY STATS</span></a></li>
         	
 
@@ -246,7 +246,7 @@ function ShowContent(termidvalue)
     try {
 		termid=termidvalue.split("$$")[0]
 		document.getElementById("repliesto").innerHTML = "REPLIES TO "+termidvalue.split("$$")[1];
-		document.getElementById("tweetsby").innerHTML = "TWEETS BY "+termidvalue.split("$$")[1];
+		document.getElementById("spantweetby").innerHTML = "TWEETS BY "+termidvalue.split("$$")[1];
         modal.style.display = "block";
         document.getElementById("tabs").style.display = "block";
         document.getElementById("tweetsdisplay").style.display = "block";
