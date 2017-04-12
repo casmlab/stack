@@ -18,7 +18,7 @@
           <tr>
             <th>Project Name</th>
             <th># Collectors</th>
-            <th># Active Collectors</th>
+            <!--<th># Active Collectors</th>-->
           </tr>
         </thead>
         <tbody>
@@ -27,7 +27,7 @@
             <tr>
               <td><a href="{{ url_for('home', project_name=project['project_name']) }}">{{ project['project_name'] }}</a></td>
               <td>{{ project['num_collectors'] }}</td>
-              <td>{{ project['active_collectors'] }}</td>
+              <!--<td>{{ project['active_collectors'] }}</td>-->
             </tr>
           {% endfor %}
 
