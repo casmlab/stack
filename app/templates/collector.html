@@ -248,8 +248,8 @@ function ShowContent(termidvalue)
 		$("#tweetsto").removeClass("active");
 		$("#termstats").addClass("active");
 		termid=termidvalue.split("$$")[0]
-		document.getElementById("repliesto").innerHTML = "REPLIES TO "+termidvalue.split("$$")[1];
-		document.getElementById("spantweetby").innerHTML = "TWEETS BY "+termidvalue.split("$$")[1];
+		document.getElementById("repliesto").innerHTML = "REPLIES TO "+(termidvalue.split("$$")[1]);
+		document.getElementById("spantweetby").innerHTML = "TWEETS BY "+(termidvalue.split("$$")[1]);
         modal.style.display = "block";
         document.getElementById("tabs").style.display = "block";
         document.getElementById("tweetsdisplay").style.display = "block";
