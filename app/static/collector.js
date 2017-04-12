@@ -73,6 +73,7 @@ function dataretriveFailed(reason)
  document.getElementById("modalheader").style.backgroundColor = "#EE0000";
 document.getElementById("putdata").innerHTML =reason;
 document.getElementById("header").innerHTML = "";
+document.getElementById("tabs").style.display="none";
 }
 
 
