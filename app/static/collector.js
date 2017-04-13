@@ -81,8 +81,8 @@ function setPageandDateDefault() {
 try{
     var currentdate=new Date();
     var currdate=currentdate.getFullYear()+"-"+
-currentdate.getDate()+"-"+
-	     (currentdate.getMonth()+1)+
+(currentdate.getMonth()+1)+"-"+
+	     (currentdate.getDate())+
 		"T"+currentdate.getHours()+":"+
 		currentdate.getMinutes()+":"+currentdate.getSeconds()+"Z";
 		
