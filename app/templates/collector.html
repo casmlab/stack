@@ -304,7 +304,7 @@ function showtweets(tabnumber = tabstatus)
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         createdts = localStorage.getItem("createdts");
-        //alert(localStorage.getItem("terms"));
+        alert(createdts);
         $.ajax({
             type: "GET",
             url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/1/" + createdts + "/" + tabnumber + "/" + termid,
