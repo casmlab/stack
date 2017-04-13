@@ -303,7 +303,7 @@ class DB(object):
 		    coll = project_db.tweets
 		    resp=project_db.tweets.create_index('user.id_str',unique=False)
 		    project_db.tweets.create_index('in_reply_to_user_id',unique=False)	
-			#project_db.tweets.create_index('created_ts',unique=False)	
+			project_db.tweets.create_index('created_ts',unique=False)	
 		    tweets = coll.find_one({'user.id_str':term_id})
 		    dictvalue=self.Get_Set_OtherParameters(term_id,project_id,project_name,coll)	
 		#    urlcounter=dictvalue['urlcounter']	
@@ -340,8 +340,8 @@ class DB(object):
 			valueid=term_id+project_id
 			project_db=self.connection[dbname]
 			collectionname='extraparameters_value'
-			tweetcount_in_db=0#collobject.find({'in_reply_to_user_id':long(term_id)}).count()
-			tweetcount_in_db=tweetcount_in_db+collobject.find({'user.id_str':term_id}).count()
+			#tweetcount_in_db=0#collobject.find({'in_reply_to_user_id':long(term_id)}).count()
+			tweetcount_in_db=collobject.find({'user.id_str':term_id}).count()
 			tweetcount_config=project_db.extraparameters_value.find_one({'valueid':valueid},{'total':1,'hashtags':1,
 	'urls':1,
 	'user_mentions':1,
