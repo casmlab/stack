@@ -469,8 +469,7 @@ class DB(object):
 					i=i+1
 					updatecreatedts=tweets['created_ts']
 					tweettext=tweettext+"||"+tweets['text']
-					if(i==20):
-						
+					if(i==20):						
 						dict_key=dict_key+1
 						usertweet_data[dict_key]= tweettext
 						usertweet_name[dict_key]=tweets['user']['name']
