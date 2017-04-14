@@ -463,7 +463,6 @@ class DB(object):
 			
 						
 		    if(tabstatus==2):
-				i=0
 			    cursor=coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('created_ts',-1)]).limit(200)	
 			    for tweets in cursor:
 					i=i+1
