@@ -221,7 +221,7 @@ No Terms Found</span>
 
 
 
-
+<b>
 <div id="tweetsdisplay"  class="pagination" style="margin:0% 15%">
   
   <a href="#" onclick="move_previous()">&laquo;</a>
@@ -237,7 +237,7 @@ No Terms Found</span>
 <a href="#" id="st10" name="10" onclick="showtweets(10)">10</a>
   <a href="#" onclick="move_next()">&raquo;</a>
   </div>
-
+</b>
 
 </div>
 
@@ -359,7 +359,7 @@ function showtweets(range, tabnumber = tabstatus)
                         tweet_object[tabnumber + "limit"] = res.limit;
 
                         res = GetData(tweet_object, tabnumber, 1);
-
+						showhide_extralinks(tweet_object[tabnumber + "limit"])
                         displayTweets(res, tabnumber);
                     }
                 }
