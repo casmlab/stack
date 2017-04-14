@@ -168,7 +168,7 @@ function showhide_extralinks(limit, upperlimit = 10) {
 
         if (limit < 10) {
             //diff = diff - limit;
-            for (var i = upperlimit; i >= limit; i--) {
+            for (var i = upperlimit; i > limit; i--) {
 
                 document.getElementById("st" + i).style.display = "none";
             }
