@@ -429,23 +429,61 @@ class DB(object):
 		tweetfromaccount=""
 		users=""
 		i=0
+		dict_key=0
+		usertweet_data=dict()
+		returntweetval=dict()
+		usertweet_name=dict()		
 		updatecreatedts=createdts
 		if project['status']:
 	            configdb = project_name+'_'+project_id
 	            project_db = self.connection[configdb]
 		    coll = project_db.tweets
-		    if(tabstatus==1):	
-			    for tweets in coll.find({'in_reply_to_user_id':long(term_id),'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('created_ts',-1)]).limit(20):
+		    if(tabstatus!=0):	
+			    #returntweetval[tabstatus+"name"]=0
+			    #returntweetval[tabstatus+"data"]=0
+			    cursor=coll.find({'in_reply_to_user_id':long(term_id),'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('created_ts',-1)]).limit(200)					
+			    for tweets in cursor:
+					i=i+1
+					#tweetsvalues[i]=tweets['text']
 					updatecreatedts=tweets['created_ts']
 					tweettext=tweettext+ "||" +tweets['text']	
 					users=users+"||"+tweets['user']['name']
+					if(i==20):
+						
+						dict_key=dict_key+1
+						usertweet_data[dict_key]= tweettext
+						usertweet_name[dict_key]=users
+						tweettext="" 
+						users=""			 					
+						i=1
+		   	    if(dict_key<10):
+				dict_key=dict_key+1
+				usertweet_data[dict_key]= tweettext
+				usertweet_name[dict_key]=users
+			
+						
 		    if(tabstatus==2):
-			    for tweets in coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('created_ts',-1)]).limit(20):
+			    cursor=coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('created_ts',-1)]).limit(200)	
+			    for tweets in cursor:
 				updatecreatedts=tweets['created_ts']
 				tweettext=tweettext+"||"+tweets['text']
-		    if i==0:
+				if(i==20):
+						
+						dict_key=dict_key+1
+						usertweet_data[dict_key]= tweettext
+						usertweet_name[dict_key]=tweets['user']['name']
+						tweettext="" 				
+						i=1 
+			    if(dict_key<10):
+				dict_key=dict_key+1
+				usertweet_data[dict_key]= tweettext
+				usertweet_name[dict_key]=users	
+		    if i>0:
 			#t1=data['list']
-	                resp = {'status': tabstatus, 'message': 'success', 'tweets':tweettext,'users':users,'createdts':str(updatecreatedts)}
+			#key=str(tabstatus)+""
+			returntweetval[str(tabstatus)+"tweets"]=usertweet_data
+			returntweetval[str(tabstatus)+"users"]=usertweet_name
+	                resp = {'status': tabstatus, 'message': 'success', 'tweets':tweettext,'users':users,'createdts':str(updatecreatedts),'val':returntweetval,'limit':dict_key}
 	            else:
 	                resp = {'status': 0, 'message': 'Failed','reason':'No Data for the Term'}
 		else:

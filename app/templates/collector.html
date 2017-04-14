@@ -147,7 +147,7 @@
 
           {% for term in collector['terms_list'] %}
             <tr >
-              <td  class="termname" id={{term['term']}}$${{term['id']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
+              <td  class="termname" id={{term['id']}} names={{term['term']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
               <td >{{ term['term'] }}</td>
               <td>
                 {% if term['collect'] == 1 %}
@@ -205,8 +205,10 @@ No Terms Found</span>
 
 
     </div>
-<span style="display:none;left:50%;top:-4%;position:relative" id="pagenum"></span>
-    <div class="modal-body" id="putdata">
+
+
+<!--<span style="display:none;left:50%;top:-4%;position:relative" id="pagenum"></span>
+    --><div class="modal-body" id="putdata">
       <p></p>
       <p></p>
     </div>
@@ -216,14 +218,32 @@ No Terms Found</span>
       <p></p>
     </div>
 
-<button id="tweetsdisplay" class="databutton" value="" text="1"  onclick="showtweets()"><span>View Content</span></button>
 
+
+
+
+<div id="tweetsdisplay"  class="pagination" style="margin:0% 15%">
+  
+  <a href="#" onclick="move_previous()">&laquo;</a>
+  <a href="#" id="st1" name="1" onclick="showtweets(1)"  class="active">1</a>
+  <a href="#" id="st2" name="2" onclick="showtweets(2)">2</a>
+  <a href="#" id="st3" name="3" onclick="showtweets(3)">3</a>
+  <a href="#" id="st4" name="4" onclick="showtweets(4)">4</a>
+  <a href="#" id="st5" name="5" onclick="showtweets(5)">5</a>
+  <a href="#"  id="st6" name="6" onclick="showtweets(6)">6</a>
+<a href="#"  id="st7" name="7" onclick="showtweets(7)">7</a>
+<a href="#" id="st8" name="8" onclick="showtweets(8)">8</a>
+<a href="#"  id="st9" name="9" onclick="showtweets(9)">9</a>
+<a href="#" id="st10" name="10" onclick="showtweets(10)">10</a>
+  <a href="#" onclick="move_next()">&raquo;</a>
   </div>
+
 
 </div>
 
 
 <script>
+var tweet_object = {};
 var tabstatus = 3;
 var totalcols = document.getElementById('showtable').getElementsByTagName("td").length;
 var entries = 0;
@@ -240,30 +260,33 @@ var i = 0,
     flag = 1;
 
 /*method in views.py*/
-function ShowContent(termidvalue)
+function ShowContent(termid, termname)
 
 {
     try {
-		$("#tweetsby").removeClass("active");
-		$("#tweetsto").removeClass("active");
-		$("#termstats").addClass("active");
-		termid=termidvalue.split("$$")[1]
-		document.getElementById("repliesto").innerHTML = "REPLIES TO "+(termidvalue.split("$$")[0]);
-		document.getElementById("spantweetby").innerHTML = "TWEETS BY "+(termidvalue.split("$$")[0]);
+        termname = document.getElementById(termid).getAttribute("names");
+        //tweet_object={};
+        $("#tweetsby").removeClass("active");
+        $("#tweetsto").removeClass("active");
+        $("#termstats").addClass("active");
+        //termid=termidvalue.split("$$")[1];
+        setJsonmap(termid);
+        localStorage.setItem("termid", termid);
+
         modal.style.display = "block";
         document.getElementById("tabs").style.display = "block";
         document.getElementById("tweetsdisplay").style.display = "none";
-        document.getElementById("pagenum").style.display = "none";
-        document.getElementById("tweetsdisplay").value = termidvalue
-		document.getElementById("header").innerHTML="";
-		document.getElementById("modalheader").style.backgroundColor = "";
+        document.getElementById("repliesto").innerHTML = "REPLIES TO " + (termname);
+        document.getElementById("spantweetby").innerHTML = "TWEETS BY " + (termname);
+        document.getElementById("header").innerHTML = "";
+        document.getElementById("modalheader").style.backgroundColor = "";
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         /*checks to see if termid is blank,in that case please check config db*/
 
         if (termid == "None") {
-            dataretriveFailed("No Data for  "+termidvalue.split("$$")[0])
-            document.getElementById("tweetsdisplay").style.display = "none";
+            dataretriveFailed("No Data for  " + termname)
+
             hideLoader()
         } else {
 
@@ -275,13 +298,15 @@ function ShowContent(termidvalue)
 
                     hideLoader();
                     res = JSON.parse(result);
-                    if (res.message == "Failed"){
-                        dataretriveFailed(res.reason+" "+termidvalue.split("$$")[0])
-						 document.getElementById("tweetsdisplay").style.display = "none";
-						}
-                    else
+                    if (res.message == "Failed") {
+                        dataretriveFailed(res.reason + " " + termid)
+                        document.getElementById("tweetsdisplay").style.display = "none";
+                    } else {
                         displayTermValues(res);
 
+
+
+                    }
                 }
             });
         }
@@ -294,36 +319,54 @@ function ShowContent(termidvalue)
 
 
 
-function showtweets(tabnumber = tabstatus)
+function showtweets(range, tabnumber = tabstatus)
 
 {
     try {
-        document.getElementById("tabs").style.display = "block";
-        termidvalue = document.getElementById("tweetsdisplay").value;
-		termid=termidvalue.split("$$")[1]
+        termname = document.getElementById(termid).getAttribute("names");
+        termid = localStorage.getItem("termid");
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         createdts = localStorage.getItem("createdts");
-        $.ajax({
-            type: "GET",
-            url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/1/" + createdts + "/" + tabnumber + "/" + termid,
+        if ((tabstatus + "tweets") in tweet_object) {
+            res = GetData(tweet_object, tabstatus, range);
 
-            success: function(result) {
-                document.getElementById("pagenum").style.display = "block";
-                hideLoader();
-                modal.style.display = "block";
-                res = JSON.parse(result);
+            showhide_extralinks(tweet_object[tabnumber + "limit"])
+            $("#st" + range).addClass("active");
 
-                if (res.message == "Failed")
-                    dataretriveFailed(res.reason+" "+termidvalue.split("$$")[0])
-                else displayTweets(res, tabnumber);
-            }
-        });
+            displayTweets(res, tabnumber);
+            hideLoader();
+        } else {
+            $.ajax({
+                type: "GET",
+                url: "/display_termsvalue/{{projectid}}/{{project_name}}/{{network}}/{{collector['collector_name']}}/{{collector['_id']}}/1/" + createdts + "/" + tabnumber + "/" + termid,
+
+                success: function(result) {
+                    // document.getElementById("pagenum").style.display = "block";
+                    hideLoader();
+                    //  modal.style.display = "block";
+                    res = JSON.parse(result);
+
+
+                    if (res.message == "Failed")
+                        dataretriveFailed(res.reason + " " + termname)
+                    else {
+
+                        tweet_object[tabnumber + "tweets"] = res.val[tabnumber + "tweets"]
+                        tweet_object[tabnumber + "users"] = res.val[tabnumber + "users"]
+                        tweet_object[tabnumber + "limit"] = res.limit;
+
+                        res = GetData(tweet_object, tabnumber, 1);
+
+                        displayTweets(res, tabnumber);
+                    }
+                }
+            });
+        }
     } catch (e) {
         console.log(e);
     }
 }
-
 </script>
 
 {% endblock %}
