@@ -165,18 +165,19 @@ function search() {
 
 function showhide_extralinks(limit, upperlimit = 10) {
     try {
-
+		var id=document.getElementsByClassName("active"))[1].innerHTML
+		 $("#st" + id).removeClass("active");
         if (limit < 10) {
             //diff = diff - limit;
             for (var i = upperlimit; i > limit; i--) {
-
+				
                 document.getElementById("st" + i).style.display = "none";
             }
 
 
         } else {
-            for (var i = 10; i > 0; i--) {
-                $("#st" + i).removeClass("active");
+            for (var i = 1; i <=limit i++) {
+               
                 document.getElementById("st" + i).style.display = "block";
             }
         }
