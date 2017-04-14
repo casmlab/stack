@@ -357,9 +357,10 @@ function showtweets(range, tabnumber = tabstatus)
                         tweet_object[tabnumber + "tweets"] = res.val[tabnumber + "tweets"]
                         tweet_object[tabnumber + "users"] = res.val[tabnumber + "users"]
                         tweet_object[tabnumber + "limit"] = res.limit;
-
+						          
                         res = GetData(tweet_object, tabnumber, 1);
 						showhide_extralinks(tweet_object[tabnumber + "limit"])
+						  $("#st1").addClass("active");
                         displayTweets(res, tabnumber);
                     }
                 }
