@@ -191,7 +191,7 @@ function move_next() {
 
     var number = (document.getElementsByClassName("active"))[1].innerHTML
     if (number <= 9) {
-        showtweets(number + 1);
+        showtweets(parseInt(number) + 1);
 
     }
 
@@ -202,7 +202,7 @@ function move_next() {
 function move_previous() {
     var number = (document.getElementsByClassName("active"))[1].innerHTML
     if (number >= 2) {
-        showtweets(number - 1);
+        showtweets(parseInt(number) - 1);
 
     }
 
