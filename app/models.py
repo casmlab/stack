@@ -438,7 +438,7 @@ class DB(object):
 	            configdb = project_name+'_'+project_id
 	            project_db = self.connection[configdb]
 		    coll = project_db.tweets
-		    if(tabstatus!=0):	
+		    if(tabstatus==1):	
 			    #returntweetval[tabstatus+"name"]=0
 			    #returntweetval[tabstatus+"data"]=0
 			    cursor=coll.find({'in_reply_to_user_id':long(term_id),'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('created_ts',-1)]).limit(200)					
@@ -455,7 +455,7 @@ class DB(object):
 						usertweet_name[dict_key]=users
 						tweettext="" 
 						users=""			 					
-						i=1
+						i=0
 		   	    if(dict_key<10):
 				dict_key=dict_key+1
 				usertweet_data[dict_key]= tweettext
@@ -473,12 +473,12 @@ class DB(object):
 						usertweet_data[dict_key]= tweettext
 						usertweet_name[dict_key]=tweets['user']['name']
 						tweettext="" 				
-						i=1 
+						i=0
 			    if(dict_key<10):
 				dict_key=dict_key+1
 				usertweet_data[dict_key]= tweettext
 				usertweet_name[dict_key]=users	
-		    if i>0:
+		    if i>-1:
 			#t1=data['list']
 			#key=str(tabstatus)+""
 			returntweetval[str(tabstatus)+"tweets"]=usertweet_data
