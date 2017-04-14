@@ -324,8 +324,9 @@ function showtweets(range, tabnumber = tabstatus)
 
 {
     try {
+	termid = localStorage.getItem("termid");
         termname = document.getElementById(termid).getAttribute("names");
-        termid = localStorage.getItem("termid");
+        
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         createdts = localStorage.getItem("createdts");
