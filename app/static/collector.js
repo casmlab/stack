@@ -165,7 +165,7 @@ function search() {
 
 function showhide_extralinks(limit, upperlimit = 10) {
     try {
-		var id=document.getElementsByClassName("active"))[1].innerHTML
+		var id=(document.getElementsByClassName("active"))[1].innerHTML
 		 $("#st" + id).removeClass("active");
         if (limit < 10) {
             //diff = diff - limit;
