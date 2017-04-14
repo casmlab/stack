@@ -175,7 +175,7 @@ function showhide_extralinks(limit, upperlimit = 10) {
 
 
         
-            for (var i = 1; i <=limit i++) {
+            for (var i = 1; i <=limit ;i++) {
                
                 document.getElementById("st" + i).style.display = "block";
             
