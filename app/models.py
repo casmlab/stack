@@ -375,21 +375,10 @@ class DB(object):
 				parameters['retweetedcounts']=0 
 				parameters['favorite_count']=0	
 				parameters['duplicates']=0	
-				
-				#for i in range(1,2):
-					#if(i==0):
-					#	set_errorflag_str="in_reply_id"
-						#urlcounters=collobject.find({'in_reply_to_user_id':long(term_id)},{'in_reply_to_user_id':1,'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})	
-					#else:	
-					#	set_errorflag_str="user_id"	
 				urlcounters=collobject.find({'user.id_str':term_id},{'in_reply_to_user_id':1,'text':1,'favorite_count':1,'counts.urls':1,'counts.hashtags':1,'counts.user_mentions':1,'retweeted':1})			
 				for val in urlcounters:
-						duplicatevalues=0
-					#	if(set_errorflag_str=="user_id"):
-					#		value=val['in_reply_to_user_id']
-					#		if(str(value)==str(term_id)):
-					#			duplicatevalues=0
-					#			parameters['duplicates']=0#parameters['duplicates']+1			
+					duplicatevalues=0
+		
 					if(duplicatevalues==0):
 								if("!" in val['text']):
 									parameters['exclamationmark']=parameters['exclamationmark']+1
@@ -405,7 +394,7 @@ class DB(object):
 									parameters['hashtagscounter']=parameters['hashtagscounter']+1
 
 
-				parameters['totalcounts']=tweetcount_in_db-parameters['duplicates']	
+				parameters['totalcounts']=tweetcount_in_db
 				result=project_db.extraparameters_value.insert({
 	"valueid":term_id+project_id,
 	"hashtags":parameters['hashtagscounter'],
