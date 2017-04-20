@@ -147,9 +147,9 @@
 
           {% for term in collector['terms_list'] %}
             <tr >
-				 {% if collector['locations'] %}
+				{% if collector['locations'] %}
 					 <td  class="termname" id={{term['id']}} names={{term['term']}} >{{ term['term'] }}</td>
-				 {% else %}
+				{% else %}
 					<td  class="termname" id={{term['id']}} names={{term['term']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
 				{% end if %}
               <td >{{ term['term'] }}</td>
