@@ -147,7 +147,11 @@
 
           {% for term in collector['terms_list'] %}
             <tr >
-              <td  class="termname" id={{term['id']}} names={{term['term']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
+				 {% if collector['locations'] =="track" %}
+					 <td  class="termname" id={{term['id']}} names={{term['term']}} >{{ term['term'] }}</td>
+				 {% else %}
+					<td  class="termname" id={{term['id']}} names={{term['term']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
+				{%end if%}
               <td >{{ term['term'] }}</td>
               <td>
                 {% if term['collect'] == 1 %}
@@ -259,7 +263,7 @@ document.getElementById("searchterm").value = "";
 var searchterm = "";
 var i = 0,
     flag = 1;
-alert("{{ collector['api'] }}");
+
 /*method in views.py*/
 function ShowContent(termid, termname)
 
