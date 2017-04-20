@@ -147,7 +147,11 @@
 
           {% for term in collector['terms_list'] %}
             <tr >
+				 {% if collector['locations']=='track' %}
+					 <td  class="termname" id={{term['id']}} names={{term['term']}} >{{ term['term'] }}</td>
+				 {% else %}
 					<td  class="termname" id={{term['id']}} names={{term['term']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
+				{% endif %}
               <td >{{ term['term'] }}</td>
               <td>
                 {% if term['collect'] == 1 %}
