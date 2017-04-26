@@ -46,11 +46,10 @@ function displayTermValues(res) {
         "<br><b>Favourite Count:</b>" + res.favouritecount +
         "<br><b>Status Count:</b>" + res.statuscount +
         "<br><b>Followers:</b>" + res.followers + "<br><b>----OUR DATABASE STATS---</b><br>" + "<br><b>Total URLS:</b>" + res.totalurls +
+		 "<br><b>Tweets By " + res.names + ":</b> " + res.total_tweets+
         "<br><b>Total Tweets with Hashtags:</b>" + res.hashtagscounter +
         "<br><b>Total Tweets with exclamation:</b> " + res.tweets_with_exclaim +
-        "<br><b>Total Tweets with User mentions:</b> " + res.tweets_user_mentions +
-        "<br><b>Total Tweets with Re-tweeted:</b> " + res.total_retweets +
-        "<br><b>Tweets By " + res.names + ":</b> " + res.total_tweets;
+        "<br><b>Total Tweets with User mentions:</b> " + res.tweets_user_mentions;
     document.getElementById("header").style.color = "#" + res.headercolor;
     document.getElementById("header").innerHTML = res.names
 
