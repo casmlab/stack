@@ -573,7 +573,7 @@ class DB(object):
 				dbnamevalue.tweets.create_index('id_str',unique=True)	
 				dbnamevalue.tweets.create_index('user.id_str',unique=False)
 				dbnamevalue.tweets.create_index('created_ts',unique=False)
-				dbnamevalue.create_index('created_ts',unique=False)	
+				dbnamevalue.tweets.create_index('created_ts',unique=False)	
 				#####################################################################################
                 resp = coll.find_one({'collector_name': collector_name})
                 collector_id = str(resp['_id'])
