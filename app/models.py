@@ -569,11 +569,11 @@ class DB(object):
             try:
                 coll.insert(doc)
                 dbnamevalue=self.connection[dbnamevalue]
-				#remove the 3 lines if things break,sets indexes in the project table of tweets collector
+		#remove the 3 lines if things break,sets indexes in the project table of tweets collector
                 dbnamevalue.tweets.create_index('id_str',unique=True)	
                 dbnamevalue.tweets.create_index('user.id_str',unique=False)
-				dbnamevalue.tweets.create_index('created_ts',unique=False)
-			    dbnamevalue.tweets.create_index('created_ts',unique=False)	
+		dbnamevalue.tweets.create_index('created_ts',unique=False)
+		dbnamevalue.tweets.create_index('created_ts',unique=False)	
 				#####################################################################################
                 resp = coll.find_one({'collector_name': collector_name})
                 collector_id = str(resp['_id'])
