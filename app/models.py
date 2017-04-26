@@ -568,7 +568,8 @@ class DB(object):
         else:
             try:
                 coll.insert(doc)
-				#dbnamevalue=project_name+"_"+project_id
+				dbnamevalue=project_name+"_"+str(project_id)
+                dbnamevalue=self.connection[dbnamevalue]
 				#remove the 3 lines if things break,sets indexes in the project table of tweets collector
                 dbnamevalue.tweets.create_index('id_str',unique=True)	
                 dbnamevalue.tweets.create_index('user.id_str',unique=False)
