@@ -384,7 +384,7 @@ class DB(object):
 									parameters['exclamationmark']=parameters['exclamationmark']+1
 								if(val['favorite_count']>=1):
 									parameters['favorite_count']=parameters['favorite_count']+1
-								if(val['retweeted']==True):
+								if(val['retweeted']=='True'):
 									parameters['retweetedcounts']=parameters['retweetedcounts']+1
 								if(val['counts']['user_mentions']>=1):	
 									parameters['user_mentionscounts']=parameters['user_mentionscounts']+1	
