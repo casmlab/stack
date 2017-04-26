@@ -559,7 +559,7 @@ class DB(object):
 
         project_config_db = self.connection[configdb]
         coll = project_config_db.config
-
+        dbnamevalue=project_name+"_"+str(project_id)
         # If collector already exists, warns the user
         resp = coll.find_one({'collector_name': collector_name})
         if resp is not None:
@@ -568,7 +568,6 @@ class DB(object):
         else:
             try:
                 coll.insert(doc)
-				dbnamevalue=project_name+"_"+str(project_id)
                 dbnamevalue=self.connection[dbnamevalue]
 				#remove the 3 lines if things break,sets indexes in the project table of tweets collector
                 dbnamevalue.tweets.create_index('id_str',unique=True)	
