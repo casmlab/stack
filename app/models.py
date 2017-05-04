@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from werkzeug import check_password_hash
 from app import app
 import traceback
+import datetime
 
 class DB(object):
     """
@@ -335,7 +336,18 @@ class DB(object):
 		try:
 			dbname=projectname+'Config'
 			flag=0
-			statusinfo=-1
+			########create database with time stamp
+			project_db=self.connection['created_timestamp']
+			timestampvalue=project_db.timestamp.find_one({'status':1},{'timestamp':1})
+			
+			#timestamp=timestamp_collect['timestamp']
+			if(timestampvalue==None):
+				#timestamp=timestampv
+				timestamp=datetime.datetime.now()
+				project_db.timestamp.insert({'timestamp':timestamp,'status':1})				
+			else:
+				timestamp=timestampvalue['timestamp']
+				
 			parameters=dict()
 			valueid=term_id+project_id
 			project_db=self.connection[dbname]
@@ -348,14 +360,14 @@ class DB(object):
 	'totalretweets':1,
 	'favorite_count':1,
 	'exclamationmark':1,
-	'duplicatevalues':1})
+	'duplicatevalues':1,'statusinfo':1})
 			if(tweetcount_config != None):
 				flag=1
 				statusinfo=0	
-				if((tweetcount_config['total'])!=tweetcount_in_db):
+				if(((tweetcount_config['total'])!=tweetcount_in_db) or (str(tweetcount_config['statusinfo'])!=str(timestamp))):
 						flag=0
 						statusinfo=2
-						project_db.extraparameters_value.remove({'valueid':valueid})	
+						project_db.extraparameters_value.remove({'valueid':tweetcount_config['valueid']})	
 				else:
 						flag=1
 						parameters['urlcounter']=tweetcount_config['urls']	
@@ -404,7 +416,7 @@ class DB(object):
 	"totalretweets":parameters['retweetedcounts'],
 	"favorite_count":parameters['favorite_count'],
 	"exclamationmark":parameters['exclamationmark'],
-	"statusinfo":statusinfo,
+	"statusinfo":timestamp,
 	"duplicatevalues":parameters['duplicates']
 	})
 			return parameters
