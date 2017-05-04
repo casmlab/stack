@@ -367,7 +367,7 @@ class DB(object):
 				if(((tweetcount_config['total'])!=tweetcount_in_db) or (str(tweetcount_config['statusinfo'])!=str(timestamp))):
 						flag=0
 						statusinfo=2
-						project_db.extraparameters_value.remove({'valueid':tweetcount_config['valueid']})	
+						project_db.extraparameters_value.remove({'valueid':valueid})	
 				else:
 						flag=1
 						parameters['urlcounter']=tweetcount_config['urls']	
