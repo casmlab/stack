@@ -1,20 +1,20 @@
 function displayTweets(res, tabnumber) {
     var information = "<br>";
     var usertweetinfo = "<br><b>----Tweets by---------" + document.getElementById("header").innerHTML + "----</b><br>";
- 
+    //   var pagenum = parseInt(localStorage.getItem("setpagenumber"));
+    //  pagenum = pagenum + 1;
+    //alert(res)
     var tweets = res.tweets.split("||");
     var users = res.users.split("||");
-    var createddate=res.createdtime.split("||");
-for (var i = 1; i < tweets.length; i++) {
     if (tabnumber == 1) {
-        
-            information = information + "<b>" + users[i] + " :</b>" + tweets[i].trim() ;
+        for (var i = 1; i < tweets.length; i++) {
+            information = information + "<b>" + users[i] + " :</b>" + tweets[i] + "<br>";
         }
-     else {
-        
-            information = information + tweets[i].trim() ;
+    } else {
+        for (var i = 1; i < tweets.length; i++) {
+            information = information + tweets[i] + "<br>";
         }
-information=information+"  <b> Posted On:"+createddate[i]+"</b><br>"
+
     }
 
     if (tweets.length == 1) {
@@ -23,14 +23,15 @@ information=information+"  <b> Posted On:"+createddate[i]+"</b><br>"
         //pagenum=0;
 
     }
-  
+    //alert(res.createdts);
     if (tweets.length <= 20) {
         setPageandDateDefault()
 
     } else
         localStorage.setItem("createdts", res.createdts);
     document.getElementById("putdata").innerHTML = information;
-
+    //document.getElementById("pagenum").innerHTML = "<b>Page: " + pagenum + "</b>";
+    //alert(res.createdts);
     /* if (tweets.length <= 20)
                     pagenum = 0;
               //  localStorage.setItem("setpagenumber", pagenum);
@@ -47,12 +48,12 @@ function displayTermValues(res) {
         "<br><b>Location:</b>" + res.location +
         "<br><b>Favourite Count:</b>" + res.favouritecount +
         "<br><b>Status Count:</b>" + res.statuscount +
-        "<br><b>Followers:</b>" + res.followers + "<br><b>----OUR DATABASE STATS---</b><br>" + 
-		"<br><b>Tweets By " + res.names + ":</b> " + res.total_tweets+
-		"<br><b>Total URLS:</b>" + res.totalurls +		
+        "<br><b>Followers:</b>" + res.followers + "<br><b>----OUR DATABASE STATS---</b><br>" + "<br><b>Total URLS:</b>" + res.totalurls +
         "<br><b>Total Tweets with Hashtags:</b>" + res.hashtagscounter +
         "<br><b>Total Tweets with exclamation:</b> " + res.tweets_with_exclaim +
-        "<br><b>Total Tweets with User mentions:</b> " + res.tweets_user_mentions;
+        "<br><b>Total Tweets with User mentions:</b> " + res.tweets_user_mentions +
+        "<br><b>Total Tweets with Re-tweeted:</b> " + res.total_retweets +
+        "<br><b>Tweets By " + res.names + ":</b> " + res.total_tweets;
     document.getElementById("header").style.color = "#" + res.headercolor;
     document.getElementById("header").innerHTML = res.names
 
@@ -143,8 +144,7 @@ function GetData(tweet_object, tabstatus, range, limit) {
     jsonobj.tweets = tweet_object[tabstatus + "tweets"][range];
     jsonobj.users = tweet_object[tabstatus + "users"][range];
     jsonobj.limit = tweet_object[tabstatus + "limit"]
-    jsonobj.createdtime = tweet_object[tabstatus + "created_ts"][range];
- 
+    //showhide_extralinks(limit)
     return jsonobj;
 }
 
@@ -168,20 +168,20 @@ function search() {
 
 function showhide_extralinks(limit, upperlimit = 10) {
     try {
-	
-    
-            //diff = diff - limit;
-            for (var i = 1; i <= upperlimit; i++) {
-				$("#st"+i).removeClass("active")
+
+        if (limit < 10) {
+            diff = diff - limit;
+            for (var i = upperlimit; i >= 6; i--) {
+
                 document.getElementById("st" + i).style.display = "none";
             }
 
 
-        
-            for (var i = 1; i <=limit ;i++) {
-               
+        } else {
+            for (var i = 10; i > 0; i--) {
+                $("#st" + i).removeClass("active");
                 document.getElementById("st" + i).style.display = "block";
-            
+            }
         }
     } catch (e) {
         console.log(e);
@@ -194,7 +194,7 @@ function move_next() {
 
     var number = (document.getElementsByClassName("active"))[1].innerHTML
     if (number <= 9) {
-        showtweets(parseInt(number) + 1);
+        showtweets(number + 1);
 
     }
 
@@ -205,7 +205,7 @@ function move_next() {
 function move_previous() {
     var number = (document.getElementsByClassName("active"))[1].innerHTML
     if (number >= 2) {
-        showtweets(parseInt(number) - 1);
+        showtweets(number - 1);
 
     }
 

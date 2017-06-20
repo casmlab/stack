@@ -367,7 +367,7 @@ class DB(object):
 				if(((tweetcount_config['total'])!=tweetcount_in_db) or (str(tweetcount_config['statusinfo'])!=str(timestamp))):
 						flag=0
 						statusinfo=2
-						project_db.extraparameters_value.remove({'valueid':valueid})	
+						project_db.extraparameters_value.remove({'valueid':tweetcount_config['valueid']})	
 				else:
 						flag=1
 						parameters['urlcounter']=tweetcount_config['urls']	
@@ -428,14 +428,12 @@ class DB(object):
 		project = self.get_project_detail(project_id)
 		tweettext=""
 		tweetfromaccount=""
-		created_date=""
 		users=""
 		i=0
 		dict_key=0
 		usertweet_data=dict()
 		returntweetval=dict()
 		usertweet_name=dict()		
-		created_ts=dict()		
 		updatecreatedts=createdts
 		if project['status']:
 	            configdb = project_name+'_'+project_id
@@ -451,14 +449,11 @@ class DB(object):
 					updatecreatedts=tweets['created_ts']
 					tweettext=tweettext+ "||" +tweets['text']	
 					users=users+"||"+tweets['user']['name']
-					created_date=created_date+"||"+str(tweets['created_ts'])
 					if(i==20):
 						
 						dict_key=dict_key+1
 						usertweet_data[dict_key]= tweettext
 						usertweet_name[dict_key]=users
-						created_ts[dict_key]=created_date
-						created_date=""
 						tweettext="" 
 						users=""			 					
 						i=0
@@ -466,7 +461,6 @@ class DB(object):
 				dict_key=dict_key+1
 				usertweet_data[dict_key]= tweettext
 				usertweet_name[dict_key]=users
-				created_ts[dict_key]=created_date
 			
 						
 		    if(tabstatus==2):
@@ -475,25 +469,21 @@ class DB(object):
 					i=i+1
 					updatecreatedts=tweets['created_ts']
 					tweettext=tweettext+"||"+tweets['text']
-					created_date=created_date+"||"+str(tweets['created_ts'])
 					if(i==20):						
 						dict_key=dict_key+1
 						usertweet_data[dict_key]= tweettext
 						usertweet_name[dict_key]=tweets['user']['name']
-						created_ts[dict_key]=created_date
 						tweettext="" 				
 						i=0
 			    if(dict_key<10):
 				dict_key=dict_key+1
 				usertweet_data[dict_key]= tweettext
-				usertweet_name[dict_key]=users
-				created_ts[dict_key]=created_date	
+				usertweet_name[dict_key]=users	
 		    if i>-1:
 			#t1=data['list']
 			#key=str(tabstatus)+""
 			returntweetval[str(tabstatus)+"tweets"]=usertweet_data
 			returntweetval[str(tabstatus)+"users"]=usertweet_name
-			returntweetval[str(tabstatus)+"created_ts"]=created_ts
 	                resp = {'status': tabstatus, 'message': 'success', 'tweets':tweettext,'users':users,'createdts':str(updatecreatedts),'val':returntweetval,'limit':dict_key}
 	            else:
 	                resp = {'status': 0, 'message': 'Failed','reason':'No Data for the Term'}

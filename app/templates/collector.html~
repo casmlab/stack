@@ -147,11 +147,7 @@
 
           {% for term in collector['terms_list'] %}
             <tr >
-				 {% if collector['api']== "track" %}
-					 <td   id={{term['id']}} names={{term['term']}} >{{ term['term'] }}</td>
-				 {% else %}
-					<td  class="termname" id={{term['id']}} names={{term['term']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
-				{% endif %}
+              <td  class="termname" id={{term['id']}} names={{term['term']}} onclick="ShowContent(this.id)">{{ term['term'] }}</td>
               <td >{{ term['term'] }}</td>
               <td>
                 {% if term['collect'] == 1 %}
@@ -225,7 +221,7 @@ No Terms Found</span>
 
 
 
-<b>
+
 <div id="tweetsdisplay"  class="pagination" style="margin:0% 15%">
   
   <a href="#" onclick="move_previous()">&laquo;</a>
@@ -241,13 +237,12 @@ No Terms Found</span>
 <a href="#" id="st10" name="10" onclick="showtweets(10)">10</a>
   <a href="#" onclick="move_next()">&raquo;</a>
   </div>
-</b>
+
 
 </div>
 
 
 <script>
-        localStorage.setItem("termid", 0);
 var tweet_object = {};
 var tabstatus = 3;
 var totalcols = document.getElementById('showtable').getElementsByTagName("td").length;
@@ -280,6 +275,7 @@ function ShowContent(termid, termname)
 
         modal.style.display = "block";
         document.getElementById("tabs").style.display = "block";
+  
         document.getElementById("tweetsdisplay").style.display = "none";
         document.getElementById("repliesto").innerHTML = "REPLIES TO " + (termname);
         document.getElementById("spantweetby").innerHTML = "TWEETS BY " + (termname);
@@ -328,9 +324,8 @@ function showtweets(range, tabnumber = tabstatus)
 
 {
     try {
-	termid = localStorage.getItem("termid");
         termname = document.getElementById(termid).getAttribute("names");
-        
+        termid = localStorage.getItem("termid");
         showLoader();
         document.getElementById("putdata").innerHTML = "";
         createdts = localStorage.getItem("createdts");
@@ -361,10 +356,9 @@ function showtweets(range, tabnumber = tabstatus)
                         tweet_object[tabnumber + "tweets"] = res.val[tabnumber + "tweets"]
                         tweet_object[tabnumber + "users"] = res.val[tabnumber + "users"]
                         tweet_object[tabnumber + "limit"] = res.limit;
-			tweet_object[tabstatus + "created_ts"]=res.val[tabnumber + "created_ts"]			          
+
                         res = GetData(tweet_object, tabnumber, 1);
-						showhide_extralinks(tweet_object[tabnumber + "limit"])
-						  $("#st1").addClass("active");
+
                         displayTweets(res, tabnumber);
                     }
                 }
