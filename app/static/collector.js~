@@ -41,7 +41,7 @@ information=information+"  <b> Posted On:"+createddate[i]+"</b><br>"
 
 function displayTermValues(res) {
 
-    information = "<b>Name: </b>" + res.names +
+    information = "<b>Name:</b>" + res.names +
         "<br> <b> Description: </b> " + res.description + "<br>" +
         "<b>Friend Count: </b> " + res.friends_count +
         "<br><b>Location: </b>" + res.location +
