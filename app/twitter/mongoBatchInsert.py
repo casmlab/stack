@@ -52,7 +52,7 @@ def get_processed_tweet_file_queue(Config, insertdir):
     insert_queue_file_list = glob.glob(tweetFileNamePattern)
     # note that the dir list may have '//' as dir separator and may not
     final_insert_queue_file_list = [s.replace('\\', '/') for s in insert_queue_file_list]
-     logger.info('RAW tweet list retrival completed %s' % tweetFileNamePattern)
+    logger.info('RAW tweet list retrival completed %s' % tweetFileNamePattern)
     return final_insert_queue_file_list
 
 
