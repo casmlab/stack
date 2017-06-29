@@ -52,7 +52,7 @@ def get_processed_tweet_file_queue(Config, insertdir):
     insert_queue_file_list = glob.glob(tweetFileNamePattern)
     # note that the dir list may have '//' as dir separator and may not
     final_insert_queue_file_list = [s.replace('\\', '/') for s in insert_queue_file_list]
-
+	logger.info('RAW tweet list retrival completed %s' % tweetFileNamePattern)
     return final_insert_queue_file_list
 
 
@@ -63,6 +63,7 @@ def insert_tweet_list(mongoCollection, tweets_list, line_number, processedTweets
     # mongo_error_code = -1
     try:
         # this call returns a list of ids
+		logger.info('Tweet Inserrtion started (%s)' % processedTweetsFile)
         inserted_ids_list = mongoCollection.insert(tweets_list, continue_on_error=True)
         #mongo_error_code = mongoCollection.error()
         mongo_error_code = data_db.error()
