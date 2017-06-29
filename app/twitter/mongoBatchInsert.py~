@@ -63,7 +63,7 @@ def insert_tweet_list(mongoCollection, tweets_list, line_number, processedTweets
     # mongo_error_code = -1
     try:
         # this call returns a list of ids
-	logger.info('Tweet Inserrtion started (%s)' % processedTweetsFile)
+		logger.info('Tweet Inserrtion started (%s)' % processedTweetsFile)
         inserted_ids_list = mongoCollection.insert(tweets_list, continue_on_error=True)
         #mongo_error_code = mongoCollection.error()
         mongo_error_code = data_db.error()
