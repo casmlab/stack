@@ -446,7 +446,7 @@ class DB(object):
 		    if(tabstatus==1):	
 			    #returntweetval[tabstatus+"name"]=0
 			    #returntweetval[tabstatus+"data"]=0
-			    cursor=coll.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'entities.user_mentions.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('timestamp_ms',-1)]).limit(200)					
+			    cursor=coll.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'entities.user_mentions.id_str':term_id}]},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('timestamp_ms',-1)]).limit(200)					
 			    for tweets in cursor:
 					i=i+1
 					#tweetsvalues[i]=tweets['text']
@@ -472,7 +472,7 @@ class DB(object):
 			
 						
 		    if(tabstatus==2):
-			    cursor=coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('timestamp_ms',-1)]).limit(200)	
+			    cursor=coll.find({'$and':[{'in_reply_to_user_id':None},{'user.id_str':term_id}]},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('timestamp_ms',-1)]).limit(200)	
 			    for tweets in cursor:
 					i=i+1
 					updatecreatedts=tweets['created_ts']
