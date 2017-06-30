@@ -305,7 +305,7 @@ class DB(object):
 		    resp=project_db.tweets.create_index('user.id_str',unique=False)
 		    project_db.tweets.create_index('in_reply_to_user_id',unique=False)	
 		    project_db.tweets.create_index('created_ts',unique=False)	
-			project_db.tweets.create_index('timestamp_ms',unique=False)
+		    project_db.tweets.create_index('timestamp_ms',unique=False)
 		    project_db.tweets.create_index('entities.user_mentions.id_str',unique=False)	
 		    tweets = coll.find_one({'user.id_str':term_id})
 		    dictvalue=self.Get_Set_OtherParameters(term_id,project_id,project_name,coll)	
@@ -446,7 +446,7 @@ class DB(object):
 		    if(tabstatus==1):	
 			    #returntweetval[tabstatus+"name"]=0
 			    #returntweetval[tabstatus+"data"]=0
-			    cursor=coll.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'entities.user_mentions.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('timestamp_m2',-1)]).limit(200)					
+			    cursor=coll.find({'$or':[{'in_reply_to_user_id':long(term_id)},{'entities.user_mentions.id_str':term_id}],'created_ts':{'$lt':dateutil.parser.parse(createdts)}},{'text':1,'user.name':1,'created_ts':1,'_id':0}).sort([('timestamp_ms',-1)]).limit(200)					
 			    for tweets in cursor:
 					i=i+1
 					#tweetsvalues[i]=tweets['text']
