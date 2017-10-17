@@ -102,6 +102,7 @@ def go(project_id, rawdir, insertdir, logdir):
     Config.read(PLATFORM_CONFIG_FILE)
 
     # Creates logger w/ level INFO
+    global logger
     logger = logging.getLogger('mongo_insert')
     logger.setLevel(logging.INFO)
     # Creates rotating file handler w/ level INFO
